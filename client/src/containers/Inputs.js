@@ -28,4 +28,4 @@ class Inputs extends Component {
     }
 }
 
-export default Inputs;
+export default connect()(Inputs);

@@ -10,4 +10,4 @@ const ListOfUsers = () => {
     );
 }
 
-export default ListOfUsers;
+export default connect()(ListOfUsers);
