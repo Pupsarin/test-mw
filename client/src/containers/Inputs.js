@@ -6,7 +6,21 @@ import Send from '@material-ui/icons/Send';
 
 
 class Inputs extends Component { 
-    send(e){
+    constructor(props) {
+        super(props);
+        this.state = {
+            message:  ""
+        }
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleChange(e) {
+        this.setState({
+            [e.target.name]: e.target.value
+        })
+    }
+    handleSubmit(e){
         e.preventDefault();
         // if (typeof this.props.onSend === 'function'){
         //     this.props.onSend(this.state.usernameInput, this.state.messageInput);
@@ -15,17 +29,17 @@ class Inputs extends Component {
     }
 
     render() {
+        const { message } = this.state;
         return(
-            <form onSubmit={this.send} className="inputs">
+            <form onSubmit={this.handleSubmit} className="inputs">
             <InputBase
                 placeholder="Enter message..." 
-                // type="text"
-                name="messageInput"
+                name="message"
                 autoComplete="off"
-                // value={this.state.messageInput}
-                // onChange={this.onChange}
+                value={message}
+                onChange={this.handleChange}
             />
-            <IconButton>
+            <IconButton type='submit'>
                 <Send/>
             </IconButton>
             </form>
