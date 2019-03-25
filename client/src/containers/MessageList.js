@@ -3,13 +3,6 @@ import { connect } from 'react-redux';
 import ChatMessage from '../components/ChatMessage';
 
 class MessageList extends Component {
-    static defaultProps = {
-        messages: [
-            {user: "Jerry", message: "hello, mike!", message_id: "123_sdas"},
-            {user: "Mike", message: "hi, Jerry!", message_id: "134_sdas"},
-            {user: "Jerry", message: "Good bye!", message_id: "1we_sdas"}
-        ]
-    }
     
     render() {
         return(

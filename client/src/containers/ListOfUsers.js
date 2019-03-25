@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-const ListOfUsers = () => {
-    return(
-        <ul>
-            <li>user1</li>
-            <li>user2</li>
-        </ul>
-    );
+class ListOfUsers extends Component {
+    render(){
+        return(
+            <div className='chat-users'>
+                {this.props.users.map((usr) => <p key={usr.user_id}>{usr.username}</p>)}
+            </div>
+        )
+    }
 }
 
-export default connect()(ListOfUsers);
+const mapStateToProps = store => ({
+    users: store.usersReducer.users
+});
+
+export default connect(mapStateToProps)(ListOfUsers);
