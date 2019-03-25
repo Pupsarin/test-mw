@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import InputBase from '@material-ui/core/InputBase';
+import IconButton from '@material-ui/core/IconButton';
+import Send from '@material-ui/icons/Send';
 
 
 class Inputs extends Component { 
@@ -14,15 +17,17 @@ class Inputs extends Component {
     render() {
         return(
             <form onSubmit={this.send} className="inputs">
-            <input 
+            <InputBase
                 placeholder="Enter message..." 
-                type="text"
+                // type="text"
                 name="messageInput"
                 autoComplete="off"
                 // value={this.state.messageInput}
                 // onChange={this.onChange}
             />
-            <button type="submit">Send</button>
+            <IconButton>
+                <Send/>
+            </IconButton>
             </form>
             )
     }
