@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
 import Send from '@material-ui/icons/Send';
-
+import { sendSocketMessage } from '../actions';
 
 class Inputs extends Component {
     constructor(props) {
@@ -21,10 +21,10 @@ class Inputs extends Component {
 
     handleSubmit(e){
         e.preventDefault();
-        // if (typeof this.props.onSend === 'function'){
-        //     this.props.onSend(this.state.usernameInput, this.state.messageInput);
-        //     this.setState({...this.state, messageInput: "", usernameInput: ""});
-        // }
+        if (typeof this.props.sendSocketMessage === 'function'){
+            this.props.sendSocketMessage(this.state.message);
+            this.setState({...this.state, message: ""});
+        }
     }
 
     render() {
@@ -45,4 +45,4 @@ class Inputs extends Component {
     }
 }
 
-export default connect()(Inputs);
+export default connect(null, { sendSocketMessage })(Inputs);

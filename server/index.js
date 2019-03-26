@@ -14,6 +14,9 @@ io.on('connection', socket => {
         db.Message.find({})
             .then( msgs => io.sockets.emit('messages', msgs));
     })
+    socket.on('message', (msg) => {
+        console.log(msg);
+    })
 });
 
 

@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import ChatMessage from '../components/ChatMessage';
 
 class MessageList extends Component {
-    
     render() {
         return(
             <div className='chat-messages'>
