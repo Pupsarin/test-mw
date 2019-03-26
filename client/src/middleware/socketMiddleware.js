@@ -2,11 +2,11 @@ import io from 'socket.io-client';
 
 
 const socketMiddleware = (url) => {
-    return storeAPI => {
+    return store => {
         const socket = io(url);
         
-        socket.on("message", (message) => {
-            storeAPI.dispatch({
+        socket.on("messages", (message) => {
+            store.dispatch({
                 type : "SOCKET_MESSAGE_RECEIVED",
                 payload : message
             });

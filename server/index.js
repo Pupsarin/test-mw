@@ -6,17 +6,21 @@ server.listen(3001, ()=> console.log('listening on 3001'));
 
 const db = require('./models');
 
-
+const { createMessage } = require('./handlers/messageHandler');
 
 io.on('connection', socket => {
     console.log('connected');
     socket.on('first_connection', () => {
         db.Message.find({})
-            .then( msgs => io.sockets.emit('messages', msgs));
-    })
+            .then( msgs => {
+                console.log(msgs)
+                return io.sockets.emit('messages', msgs);
+            });
+    });
     socket.on('message', (msg) => {
-        console.log(msg);
+        createMessage({messageBody: msg, userId:'5c9a389554eea663ad72ac93'});
     })
 });
 
 
+// 5c9a389554eea663ad72ac93
