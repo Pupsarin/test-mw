@@ -10,3 +10,4 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/chat', {
 });
 
 module.exports.User = require('./user');
+module.exports.Message = require('./message');
