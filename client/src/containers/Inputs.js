@@ -5,21 +5,20 @@ import IconButton from '@material-ui/core/IconButton';
 import Send from '@material-ui/icons/Send';
 
 
-class Inputs extends Component { 
+class Inputs extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            message:  ""
+            message: ""
         }
-        this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleInput = this.handleInput.bind(this);
     }
 
-    handleChange(e) {
-        this.setState({
-            [e.target.name]: e.target.value
-        })
+    handleInput(e) {
+        this.setState({[e.target.name]: e.target.value});
     }
+
     handleSubmit(e){
         e.preventDefault();
         // if (typeof this.props.onSend === 'function'){
@@ -29,18 +28,17 @@ class Inputs extends Component {
     }
 
     render() {
-        const { message } = this.state;
         return(
             <form onSubmit={this.handleSubmit} className="inputs">
             <InputBase
                 placeholder="Enter message..." 
                 name="message"
                 autoComplete="off"
-                value={message}
-                onChange={this.handleChange}
+                value={this.state.message}
+                onChange={this.handleInput}
             />
-            <IconButton type='submit'>
-                <Send/>
+            <IconButton type="submit">
+                <Send />
             </IconButton>
             </form>
             )
