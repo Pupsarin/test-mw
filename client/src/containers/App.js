@@ -9,7 +9,8 @@ import { default as rootReducer } from '../reducers';
 import io from 'socket.io-client';
 import SocketContext from '../socket';
 
-const host = 'http://localhost:3001';
+const token = '123';
+const host = `http://localhost:3001?token=${token}`;
 
 const store = createStore(
   rootReducer,
