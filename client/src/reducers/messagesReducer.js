@@ -1,18 +1,14 @@
-import {SEND_MESSAGE, MESSAGE_RECEIVED} from '../constants/ActionTypes';
+import { SOCKET_MESSAGE_RECEIVED } from '../constants/ActionTypes';
 
 const initialState = {
-    messages: [
-        {user: "Jerry", message: "hello, mike!", message_id: "123_sdas"},
-        {user: "Mike", message: "hi, Jerry!", message_id: "134_sdas"},
-        {user: "Jerry", message: "Good bye!", message_id: "1we_sdas"}
-    ]
+    messages: []
 }
 
 export default function messagesReducer(state = initialState, action){
     switch (action.type) {
-        case SEND_MESSAGE:
-        case MESSAGE_RECEIVED:
-            return {...state, messages: action.message}
+        // case SEND_MESSAGE:
+        case SOCKET_MESSAGE_RECEIVED:
+            return {...state, messages: action.payload}
         default:
             return state;
     }

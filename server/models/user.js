@@ -11,6 +11,11 @@ const userSchema = new mongoose.Schema({
         required: true,
         default: false
     },
+    admin: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
     banned: {
         type: Boolean,
         required: true,

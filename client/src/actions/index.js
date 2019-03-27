@@ -4,3 +4,10 @@ export function sendSocketMessage(message) {
         payload : message
     }
 }
+
+export function receiveSocketMessages(messages) {
+    return {
+        type : "SOCKET_MESSAGE_RECEIVED",
+        payload : messages
+    }
+}

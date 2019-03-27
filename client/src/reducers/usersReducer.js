@@ -1,4 +1,4 @@
-// import {SEND_MESSAGE, MESSAGE_RECEIVED} from '../constants/ActionTypes';
+// import {} from '../constants/ActionTypes';
 
 const initialState = {
     users: [
@@ -9,9 +9,6 @@ const initialState = {
 
 export default function usersReducer(state = initialState, action){
     switch (action.type) {
-        // case SEND_MESSAGE:
-        // case MESSAGE_RECEIVED:
-        //     return {...state, messages: action.message}
         default:
             return state;
     }

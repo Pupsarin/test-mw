@@ -4,8 +4,9 @@ import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
 import Send from '@material-ui/icons/Send';
 import { sendSocketMessage } from '../actions';
+import SocketContext from '../socket';
 
-class Inputs extends Component {
+class InputsWO extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -22,7 +23,9 @@ class Inputs extends Component {
     handleSubmit(e){
         e.preventDefault();
         if (typeof this.props.sendSocketMessage === 'function'){
-            this.props.sendSocketMessage(this.state.message);
+            this.props.socket.send(
+                this.props.sendSocketMessage(this.state.message).payload
+                );
             this.setState({...this.state, message: ""});
         }
     }
@@ -44,5 +47,11 @@ class Inputs extends Component {
             )
     }
 }
+
+const Inputs = props => (
+    <SocketContext.Consumer>
+        {socket => <InputsWO {...props} socket={socket} />}
+    </SocketContext.Consumer>
+)
 
 export default connect(null, { sendSocketMessage })(Inputs);

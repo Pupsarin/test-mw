@@ -9,17 +9,20 @@ const db = require('./models');
 const { createMessage } = require('./handlers/messageHandler');
 
 io.on('connection', socket => {
-    console.log('connected');
-    socket.on('first_connection', () => {
-        db.Message.find({})
-            .then( msgs => {
-                console.log(msgs)
-                return io.sockets.emit('messages', msgs);
+    console.log('connected ' + socket.id);
+    db.Message.find({}).populate('user', 'username')
+        .then( msgs => {
+            // console.log(msgs);
+            return socket.emit('messages', msgs);
+        });
+
+    socket.on('message', async (msg) => {
+        await createMessage({messageBody: msg, userId:'5c9a389554eea663ad72ac93'});
+        db.Message.find({}).populate('user', 'username')
+            .then(newMessages => { 
+                return io.sockets.emit('update', newMessages)
             });
     });
-    socket.on('message', (msg) => {
-        createMessage({messageBody: msg, userId:'5c9a389554eea663ad72ac93'});
-    })
 });
 
 
