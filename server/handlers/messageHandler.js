@@ -9,7 +9,7 @@ exports.createMessage = async function(req, res) {
         let foundUser = await db.User.findById(req.userId);
         foundUser.messages.push(message.id);
         await foundUser.save();
-        // let foundMessage = await db.Message.findById(smartDevice.id);
+        // let foundMessage = await db.Message.findById(message.id);
         // return res.json(foundMessage);
     } catch (err) {
         return err;

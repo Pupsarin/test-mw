@@ -12,6 +12,11 @@ const connections = new Map();
 io.on('connection', (socket) => {
     console.log('connected ' + socket.id);
     console.log(socket.handshake.query.token);
+    //проверить токен
+    //если токен правильный пасс
+    //нет - дисконект
+    
+    
     // get user from db by token
     const user = {isBanned: false, name: 'test', isMuted: false, isAdmin: false};
 
@@ -20,9 +25,7 @@ io.on('connection', (socket) => {
     }
 
     connections.set(socket.id, { socket, user } );
-    //проверить токен
-    //если токен правильный пасс
-    //нет - дисконект
+
     db.Message.find({}).populate('user', 'username')
         .then( msgs => {
             // console.log(msgs);
@@ -64,7 +67,7 @@ io.on('connection', (socket) => {
 
     socket.on('mute', async (msg) => {
         if (!user.idAdmin){
-            return falsae;
+            return false;
         }
 
         // mute user by id
@@ -72,7 +75,7 @@ io.on('connection', (socket) => {
 
     socket.on('unmute', async (msg) => {
         if (!user.idAdmin){
-            return falsae;
+            return false;
         }
 
         // unmute user by id
@@ -101,7 +104,7 @@ io.on('connection', (socket) => {
 
     socket.on('unban', async (msg) => {
         if (!user.idAdmin){
-            return falsae;
+            return false;
         }
 
         // unban user by id
