@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const db = require('../models');
+const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -46,6 +47,11 @@ userSchema.pre('save', async function(next){
     try {
         let user = await db.User.findOne({username: this.username});
         if (!user) {
+            if(!this.isModified('password')){
+                return next();
+            }
+            let hashedPassword = await bcrypt.hash(this.password, 10);
+            this.password = hashedPassword;
             return next();
         } else {
             this.invalidate("username must be unique");
@@ -55,6 +61,15 @@ userSchema.pre('save', async function(next){
         return next(err);
     }
 });
+
+userSchema.methods.comparePassword = async function(newPassword, next) {
+    try {
+        let isMatch = await bcrypt.compare(newPassword, this.password);
+        return isMatch;
+    } catch(err){
+        return next(err);
+    }
+}
 
 const User = mongoose.model("User", userSchema);
 

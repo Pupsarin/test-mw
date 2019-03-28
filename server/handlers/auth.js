@@ -9,9 +9,8 @@ try {
         if (user) {
             let { id, username, token } = user;
             console.log({id, username, token})
-            // let isMatch = await user.comparePassword(req.body.password);
-
-            if (true) {
+            let isMatch = await user.comparePassword(req.body.password);
+            if (isMatch) {
                 return res.status(200).json({ id, username, token });
             } else {
                 return next({
