@@ -3,7 +3,6 @@ import { withStyles } from '@material-ui/core/styles';
 import materialStyle from '../styles/materialStyle'
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import { Link } from 'react-router-dom';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 
 
@@ -77,7 +76,6 @@ class AuthForm extends Component {
                 >
                     Enter
                 </Button>
-                <Link to={signUp ? '/signin' : '/signup'}>{question}</Link>
             </form>
         )
     }
