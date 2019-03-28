@@ -5,16 +5,22 @@ import Chat from './Chat';
 import AuthForm from './AuthForm';
 import { authUser } from '../actions';
 
-const Main = (props) => (
-    <Switch>
-        <Route exact path="/enter-chat" render={ () => (
-            <AuthForm 
+const Main = (props) => {
+
+
+
+    return(
+        <Switch>
+            { !localStorage.chatToken && ( <Redirect to='/enter-chat' /> ) }
+            <Route path="/enter-chat" render={ () => (
+                <AuthForm 
                 auth={props.authUser}
-            />
-            ) }/>
-        {/* { true && ( <Redirect to='/enter-chat' /> ) } */}
-        <Route exact path='/' render={() => { return(<Chat />) }}/>
-    </Switch>
-)
+                {...props}
+                />
+                ) }/>
+            <Route exact path='/' render={() => { return(<Chat />) }}/>
+        </Switch>
+    )
+}
 
 export default withRouter(connect(null, { authUser })(Main));

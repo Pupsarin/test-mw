@@ -25,7 +25,7 @@ const connections = new Map();
 io.on('connection', (socket) => {
     console.log('connected ' + socket.id);
     console.log(socket.handshake.query.token);
-    if (socket.handshake.query.token !== '12') {
+    if (socket.handshake.query.token !== '123') {
         console.log('disconnected ' + socket.id)
         socket.disconnect();
     }

@@ -38,10 +38,9 @@ class AuthForm extends Component {
 
     render(){
         const { username, password } = this.state;
-        const { heading, classes, errors} = this.props;
+        const { classes, errors} = this.props;
         return(
             <form className={classes.userCabinet} onSubmit={this.handleSubmitUser}>
-                <h1>{heading}</h1>
                 <TextField 
                     name='username'
                     id='outlined-username'
