@@ -11,6 +11,21 @@ const messageSchema = new mongoose.Schema({
     }
 }, {timestamps: true});
 
+//todo propbably not the best place to validate length
+messageSchema.pre('save', async function(next) {
+    try {
+        if (this.messageBody.length < 200) {
+            return next()
+        } else {
+            let errMsg = 'message is longer than 200 characters';
+            this.invalidate(errMsg)
+            return next(new Error(errMsg));
+        }
+    } catch (error) {
+        return next(error);
+    }
+});
+
 const Message = mongoose.model("Message", messageSchema);
 
 module.exports = Message;

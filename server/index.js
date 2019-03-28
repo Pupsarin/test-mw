@@ -134,6 +134,5 @@ io.on('connection', (socket) => {
 
 server.listen(3001, ()=> console.log('listening on 3001'));
 
-//todo ban unban on socket
 
 // 5c9ce836bcb92526aaa226e0
