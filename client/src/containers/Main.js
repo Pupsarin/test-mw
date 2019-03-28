@@ -1,16 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { withStyles } from '@material-ui/core/styles';
-import materialStyle from '../styles/materialStyle';
+import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
 import Chat from './Chat';
+import AuthForm from './AuthForm';
 
-class Main extends Component {
+const Main = (props) => (
+    <Switch>
+        <Route exact path="/enter-chat" render={ () => {return (<AuthForm />)} }/>
+        {/* { true && ( <Redirect to='/enter-chat' /> ) } */}
+        <Route exact path='/' render={() => { return(<Chat />) }}/>
+    </Switch>
+)
 
-    render(){ 
-        return(
-            <Chat />
-        );
-    }
-}
-
-export default connect()(withStyles(materialStyle)(Main));
+export default withRouter(connect()(Main));
