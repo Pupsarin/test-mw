@@ -16,9 +16,7 @@ const host = `http://localhost:3001?token=${token}`;
 const store = createStore(
   rootReducer,
   compose(
-    applyMiddleware(
-      // socketMiddleware(host),
-      thunk),
+    applyMiddleware(thunk),
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   )
 );

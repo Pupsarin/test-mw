@@ -5,22 +5,30 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const db = require('./models');
 const { createMessage } = require('./handlers/messageHandler');
-const { createUser } = require('./handlers/userHandler');
+const authRoute = require('./routes/authRoute');
+// const { createUser } = require('./handlers/userHandler');
+
 
 
 app.use(cors());
 app.use(bodyParser.json());
 
-app.get("/", (req, res) => 
-    res.send("hello")
+app.use('/auth', authRoute);
+
+app.get('/', (req, res) => 
+    res.send('hello')
 )
 
-createUser({username: "admin", password: "admin"}).then(res => console.log(res));
+// createUser({username: "admin", password: "admin"}).then(res => console.log(res));
 
 const connections = new Map();
 io.on('connection', (socket) => {
     console.log('connected ' + socket.id);
     console.log(socket.handshake.query.token);
+    if (socket.handshake.query.token !== '12') {
+        console.log('disconnected ' + socket.id)
+        socket.disconnect();
+    }
     //проверить токен
     //если токен правильный пасс
     //нет - дисконект

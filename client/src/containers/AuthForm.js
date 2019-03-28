@@ -25,21 +25,21 @@ class AuthForm extends Component {
 
     handleSubmitUser(e){
         e.preventDefault();
-        // const authType = this.props.signUp ? 'signup' : 'signin';
-        // this.props.onAuth(authType, this.state)
-        //     .then((res) => {
-        //         if (res.user.id) {
-        //             this.props.history.push('/');
-        //         }   
-        //     })
-        //     .catch(()=>{
-        //         return;
-        //     })
+        debugger
+        this.props.auth(this.state)
+            .then((res) => {
+                if (res.user.id) {
+                    this.props.history.push('/');
+                }   
+            })
+            .catch(()=>{
+                return;
+            })
         }
 
     render(){
         const { username, password } = this.state;
-        const { heading, classes, signUp, question, errors} = this.props;
+        const { heading, classes, errors} = this.props;
         return(
             <form className={classes.userCabinet} onSubmit={this.handleSubmitUser}>
                 <h1>{heading}</h1>
@@ -49,7 +49,7 @@ class AuthForm extends Component {
                     onChange={this.handleChange}
                     value={username}
                     className={classes.textField}
-                    label='Email'
+                    label='Username'
                     type='text'
                     margin='normal'
                     variant='outlined'
