@@ -15,9 +15,9 @@ app.use(bodyParser.json());
 
 app.use('/auth', authRoute);
 
-app.get('/', (req, res) => 
-    res.send('hello')
-)
+// app.get('/', (req, res) => 
+//     res.send('hello')
+// )
 
 // createUser({username: "admin", password: "admin"}).then(res => console.log(res));
 

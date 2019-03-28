@@ -25,7 +25,6 @@ class AuthForm extends Component {
 
     handleSubmitUser(e){
         e.preventDefault();
-        debugger
         this.props.auth(this.state)
             .then((res) => {
                 if (res.user.id) {

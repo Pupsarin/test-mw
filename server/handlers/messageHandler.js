@@ -18,8 +18,7 @@ exports.createMessage = async function(req, res) {
 
 exports.getAllMessages = async function() {
     try {
-        let messages = await db.Message.find({}).populate('user', 'username')
-        console.log(messages);
+        let messages = await db.Message.find({}).populate('user', 'username');
         return messages;
     } catch (err) {
         return err;

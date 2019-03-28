@@ -44,7 +44,10 @@ export function authUser(userData) {
                 }),
                 body: JSON.stringify(userData)
             })
-            .then( res => res.json() )
+            .then( res => {
+                // debugger
+                return res.json()
+            })
             .then( ({id, username, token, message}) => {
                 if(!message) {
                     localStorage.setItem('chatToken', token);
