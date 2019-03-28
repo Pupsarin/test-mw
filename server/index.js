@@ -1,12 +1,21 @@
 const app = require('express')();
 const server  = require('http').createServer(app);
 const io = require('socket.io').listen(server, { origins: '*:*'});
-
-server.listen(3001, ()=> console.log('listening on 3001'));
-
+const cors = require('cors');
+const bodyParser = require('body-parser');
 const db = require('./models');
-
 const { createMessage } = require('./handlers/messageHandler');
+const { createUser } = require('./handlers/userHandler');
+
+
+app.use(cors());
+app.use(bodyParser.json());
+
+app.get("/", (req, res) => 
+    res.send("hello")
+)
+
+createUser({username: "admin", password: "admin"}).then(res => console.log(res));
 
 const connections = new Map();
 io.on('connection', (socket) => {
@@ -49,7 +58,7 @@ io.on('connection', (socket) => {
         // и проверяешь время отправки. если текущее время меньше допустимого интервала для нового,
         // то просто выходишь из этого метода
 
-        await createMessage({messageBody: msg, userId:'5c9a389554eea663ad72ac93'});
+        await createMessage({messageBody: msg, userId:'5c9c9a89816bd62beeaa6a23'});
 
         db.Message.find({}).populate('user', 'username')
             .then(newMessages => { 
@@ -111,6 +120,8 @@ io.on('connection', (socket) => {
     });
 });
 
+server.listen(3001, ()=> console.log('listening on 3001'));
+
 //todo ban unban on socket
 
-// 5c9a389554eea663ad72ac93
+// 5c9c9a89816bd62beeaa6a23

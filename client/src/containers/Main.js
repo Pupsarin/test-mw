@@ -1,23 +1,16 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Inputs from './Inputs';
-import ListOfUsers from './ListOfUsers';
-import MessageList from './MessageList';
 import { withStyles } from '@material-ui/core/styles';
-import materialStyle from '../styles/materialStyle'
+import materialStyle from '../styles/materialStyle';
+import Chat from './Chat';
 
-const Main = props => {
-    const { classes } = props;
-    return(
-        <div className={classes.main}>
-            <ListOfUsers />
-            <section className='messages'>
-                <MessageList />
-                <Inputs />
-            </section>
-        </div>
-    )
+class Main extends Component {
+
+    render(){ 
+        return(
+            <Chat />
+        );
+    }
 }
-
 
 export default connect()(withStyles(materialStyle)(Main));

@@ -21,7 +21,9 @@ class MessageListWO extends Component {
     render() {
         return(
             <div className='chat-messages'>
-                {this.props.messages.map((msg) => <ChatMessage message={msg.messageBody} user={msg.user.username} key={msg._id} />)}
+                {this.props.messages.map(({messageBody, user, _id}) =>
+                        <ChatMessage message={messageBody} username={user.username} key={_id} />
+                    )}
             </div>
         )
     }

@@ -6,7 +6,7 @@ class ListOfUsers extends Component {
     render(){
         return(
             <div className='chat-users'>
-                {this.props.users.map((usr) => <ListUserItem username={usr.username} key={usr.user_id}/>)}
+                {this.props.users.map(({username, user_id}) => <ListUserItem key={user_id} username={username}/>)}
             </div>
         )
     }

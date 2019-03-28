@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { createStore, applyMiddleware, compose } from 'redux';
+import { BrowserRouter as Router } from 'react-router-dom';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import Main from './Main';
@@ -31,7 +32,9 @@ class App extends Component {
       return (
       <Provider store={store}>
         <SocketContext.Provider store={store} value={socket}>
-          <Main />
+          <Router>
+            <Main />
+          </Router>
         </SocketContext.Provider>
       </Provider>
     );
