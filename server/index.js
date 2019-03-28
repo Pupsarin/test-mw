@@ -15,9 +15,13 @@ app.use(bodyParser.json());
 
 app.use('/auth', authRoute);
 
-// app.get('/', (req, res) => 
-//     res.send('hello')
-// )
+app.use(function(err, req, res, next){
+    res.status(err.status || 500);
+    res.send({
+        message: err.message,
+        error: err
+    });
+});
 
 // createUser({username: "admin", password: "admin"}).then(res => console.log(res));
 
@@ -66,7 +70,7 @@ io.on('connection', (socket) => {
         // и проверяешь время отправки. если текущее время меньше допустимого интервала для нового,
         // то просто выходишь из этого метода
 
-        await createMessage({messageBody: msg, userId:'5c9c9a89816bd62beeaa6a23'});
+        await createMessage({messageBody: msg, userId:'5c9ce836bcb92526aaa226e0'});
 
         db.Message.find({}).populate('user', 'username')
             .then(newMessages => { 
@@ -132,4 +136,4 @@ server.listen(3001, ()=> console.log('listening on 3001'));
 
 //todo ban unban on socket
 
-// 5c9c9a89816bd62beeaa6a23
+// 5c9ce836bcb92526aaa226e0
