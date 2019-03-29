@@ -8,7 +8,6 @@ const { createMessage, getAllMessages } = require('./handlers/messageHandler');
 const authRoute = require('./routes/authRoute');
 
 
-
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -24,25 +23,24 @@ app.use(function(err, req, res, next){
 
 const connections = new Map();
 io.on('connection', async (socket) => {
-    console.log('connected ' + socket.id);
-    console.log(socket.handshake.query.token);
-    if (socket.handshake.query.token !== '123') {
-        console.log('disconnected ' + socket.id)
-        socket.disconnect();
-    }
     //проверить токен
     //если токен правильный пасс
     //нет - дисконект
-    
+    // if (socket.handshake.query.token !== '123') {
+    //     console.log('disconnected ' + socket.id)
+    //     socket.disconnect();
+    // }
     
     // get user from db by token
-    const user = {isBanned: false, name: 'test', isMuted: false, isAdmin: false};
+    const user = await db.User.findOne({'token': socket.handshake.query.token});
+    // const user = {isBanned: false, name: 'test', isMuted: false, isAdmin: false};
 
     if (!user || user.isBanned){
         socket.disconnect();
     }
 
     connections.set(socket.id, { socket, user } );
+    // console.log(connections);
 
     let msg = await getAllMessages(); 
     socket.emit('messages', msg);
@@ -51,11 +49,11 @@ io.on('connection', async (socket) => {
         if (user.isAdmin) {
             socket.emit('allusers', []);
         }
-
+        // console.log([...connections.values()][0].user.username);
         // send online users
-        socket.emit('users',[...connections.values()].map((user)=>{
+        socket.emit('users',[...connections.values()].map((item)=>{
             return {
-                name: user.name
+                name: item.user.username
             };
         }));
 

@@ -19,8 +19,8 @@ class Chat extends Component {
         }
     }
     componentWillMount() {
-        const token = '123';
-        const host = `http://localhost:3001?token=${token}`;
+        // const token = localStorage.chatToken;
+        const host = `http://localhost:3001?token=${localStorage.chatToken}`;
         let socket = io(host);
         this.setState({socket});
     }
