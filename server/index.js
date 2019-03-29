@@ -21,6 +21,14 @@ app.use(function(err, req, res, next){
     });
 });
 
+function getAllOnlineUsers(io, connections) {
+    io.sockets.emit('users_online', [...connections.values()].map((item)=>{
+        return {
+            name: item.user.username
+        };
+    }));
+}
+
 const connections = new Map();
 io.on('connection', async (socket) => {
     //проверить токен
@@ -45,17 +53,13 @@ io.on('connection', async (socket) => {
     let msg = await getAllMessages(); 
     socket.emit('messages', msg);
 
-        // if user admin - send full users list
-        if (user.isAdmin) {
-            socket.emit('allusers', []);
-        }
-        // console.log([...connections.values()][0].user.username);
-        // send online users
-        socket.emit('users',[...connections.values()].map((item)=>{
-            return {
-                name: item.user.username
-            };
-        }));
+    // if user admin - send full users list
+    if (user.isAdmin) {
+        socket.emit('allusers', []);
+    }
+    // console.log([...connections.values()][0].user.username);
+    // send online users
+    getAllOnlineUsers(io, connections);
 
     socket.on('message', async (msg) => {
         // загружаешь из бд последнее сообщение пользователя, который только что прислал сообщеник
@@ -63,17 +67,18 @@ io.on('connection', async (socket) => {
         // то просто выходишь из этого метода
         await createMessage(msg);
 
-        let newMessages = await getAllMessages()
-        io.sockets.emit('update', newMessages)
+        let newMessages = await getAllMessages();
+        io.sockets.emit('update', newMessages);
 
     });
 
     // user disconnected
     socket.on('disconnect', () => {
         const connect = connections.get(socket.id);
-        io.sockets.emit('user_gone_away', {name: connect.user.name});
+        io.sockets.emit('user_gone_away', {name: connect.user.username});
         connect.socket.disconnect();
         connections.delete(socket.id);
+        getAllOnlineUsers(io, connections);
     });
 
     socket.on('mute', async (msg) => {

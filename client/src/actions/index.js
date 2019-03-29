@@ -1,4 +1,4 @@
-import {SEND_WEBSOCKET_MESSAGE, SOCKET_MESSAGE_RECEIVED, SET_CURRENT_USER, ADD_ERROR, REMOVE_ERROR} from '../constants/ActionTypes'; 
+import {SEND_WEBSOCKET_MESSAGE, SOCKET_MESSAGE_RECEIVED, SET_CURRENT_USER, SET_ONLINE_USERS, ADD_ERROR, REMOVE_ERROR} from '../constants/ActionTypes'; 
 
 export function sendSocketMessage(message) {
     return {
@@ -18,6 +18,13 @@ export function setCurrentUser(user){
     return {
         type: SET_CURRENT_USER,
         user
+    }
+}
+
+export function setOnlineUsers(users) {
+    return {
+        type: SET_ONLINE_USERS,
+        users
     }
 }
 
