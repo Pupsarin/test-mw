@@ -7,11 +7,11 @@ try {
         });
 
         if (user) {
-            let { username, token } = user;
+            let { username, token, isAdmin } = user;
             console.log({username, token})
             let isMatch = await user.comparePassword(req.body.password);
             if (isMatch) {
-                return res.status(200).json({ username, token });
+                return res.status(200).json({ username, token, isAdmin });
             } else {
                 return next({
                     status: 400,
@@ -21,7 +21,7 @@ try {
         } else {
             let user = await db.User.create(req.body);
             let { username, token } = user;
-            return res.status(200).json({ username, token });
+            return res.status(200).json({ username, token, isAdmin });
         }
 
 } catch(error) {

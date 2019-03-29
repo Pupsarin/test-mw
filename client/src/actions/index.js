@@ -1,4 +1,4 @@
-import {SEND_WEBSOCKET_MESSAGE, SOCKET_MESSAGE_RECEIVED, SET_CURRENT_USER, SET_ONLINE_USERS, ADD_ERROR, REMOVE_ERROR} from '../constants/ActionTypes'; 
+import { SEND_WEBSOCKET_MESSAGE, SOCKET_MESSAGE_RECEIVED, SET_CURRENT_USER, SET_ONLINE_USERS, SET_ALL_AVAILABLE_USERS, ADD_ERROR, REMOVE_ERROR } from '../constants/ActionTypes'; 
 
 export function sendSocketMessage(message) {
     return {
@@ -14,10 +14,11 @@ export function receiveSocketMessages(messages) {
     }
 }
 
-export function setCurrentUser(user){
+export function setCurrentUser({username, isAdmin}){
     return {
         type: SET_CURRENT_USER,
-        user
+        username,
+        isAdmin
     }
 }
 
@@ -25,6 +26,13 @@ export function setOnlineUsers(users) {
     return {
         type: SET_ONLINE_USERS,
         users
+    }
+}
+
+export function setAllUsersForAdmin(allUsers) {
+    return {
+        type: SET_ALL_AVAILABLE_USERS,
+        allUsers
     }
 }
 
@@ -52,14 +60,13 @@ export function authUser(userData) {
                 body: JSON.stringify(userData)
             })
             .then( res => {
-                // debugger
                 return res.json()
             })
-            .then( ({username, token, message}) => {
+            .then( ({username, token, message, isAdmin}) => {
                 if(!message) {
                     localStorage.setItem('chatToken', token);
                     dispatch(removeError());
-                    return dispatch(setCurrentUser(username));
+                    return dispatch(setCurrentUser({username, isAdmin}));
                 } else {
                     dispatch(addError(message));
                 }

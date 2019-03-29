@@ -23,5 +23,4 @@ exports.getAllMessages = async function() {
     } catch (err) {
         return err;
     }
-    
 }

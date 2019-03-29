@@ -5,6 +5,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const db = require('./models');
 const { createMessage, getAllMessages } = require('./handlers/messageHandler');
+const { getAllUsers } = require('./handlers/userHandler');
 const authRoute = require('./routes/authRoute');
 
 
@@ -24,25 +25,26 @@ app.use(function(err, req, res, next){
 function getAllOnlineUsers(io, connections) {
     io.sockets.emit('users_online', [...connections.values()].map((item)=>{
         return {
-            name: item.user.username
+            username: item.user.username
         };
     }));
 }
-
+// db.User.create({username: 'admin', password: 'admin', isAdmin: true});
 const connections = new Map();
 io.on('connection', async (socket) => {
-    //проверить токен
-    //если токен правильный пасс
-    //нет - дисконект
-    // if (socket.handshake.query.token !== '123') {
-    //     console.log('disconnected ' + socket.id)
-    //     socket.disconnect();
-    // }
-    
+
     // get user from db by token
     const user = await db.User.findOne({'token': socket.handshake.query.token});
     // const user = {isBanned: false, name: 'test', isMuted: false, isAdmin: false};
 
+    //проверить токен
+    //если токен правильный пасс
+    //нет - дисконект
+    if (socket.handshake.query.token !== user.token) {
+        console.log('disconnected ' + socket.id)
+        socket.disconnect();
+    }
+    
     if (!user || user.isBanned){
         socket.disconnect();
     }
@@ -50,14 +52,16 @@ io.on('connection', async (socket) => {
     connections.set(socket.id, { socket, user } );
     // console.log(connections);
 
-    let msg = await getAllMessages(); 
+    let msg = await getAllMessages();
+    // socket.emit('user')
     socket.emit('messages', msg);
 
     // if user admin - send full users list
     if (user.isAdmin) {
-        socket.emit('allusers', []);
+        let allUsers = await getAllUsers();
+        socket.emit('all_users', allUsers);
     }
-    // console.log([...connections.values()][0].user.username);
+
     // send online users
     getAllOnlineUsers(io, connections);
 

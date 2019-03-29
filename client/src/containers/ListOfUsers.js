@@ -2,20 +2,27 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ListUserItem from '../components/ListUserItem';
 import SocketContext from '../socket';
-import { setOnlineUsers } from '../actions';
+import { setOnlineUsers, setAllUsersForAdmin } from '../actions';
 
 class ListOfUsersWO extends Component {
     
-    componentWillMount() {
+    componentWillMount() { 
         this.props.socket.on('users_online', (users) => {
             this.props.setOnlineUsers(users);
+        });
+
+        this.props.socket.on('all_users', (allUsers) => {
+            this.props.setAllUsersForAdmin(allUsers);
         });
     }
 
     render(){
         return(
             <div className='chat-users'>
-                {this.props.users.map(({name}) => <ListUserItem key={name} username={name}/>)}
+                {this.props.allUsers.length === 0 
+                    ? this.props.users.map(({username}) => <ListUserItem key={username} username={username}/>)
+                    : this.props.allUsers.map(({username}) => <ListUserItem key={username} username={username}/>)
+                }
             </div>
         )
     }
@@ -28,7 +35,8 @@ const ListOfUsers = props => (
 )
 
 const mapStateToProps = store => ({
-    users: store.usersReducer.usersOnline
+    users: store.usersReducer.usersOnline,
+    allUsers: store.usersReducer.availableUsers
 });
 
-export default connect(mapStateToProps, { setOnlineUsers })(ListOfUsers);
+export default connect(mapStateToProps, { setOnlineUsers, setAllUsersForAdmin })(ListOfUsers);

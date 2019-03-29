@@ -11,3 +11,13 @@ exports.createUser = async function(req, res) {
         return err;
     }
 };
+
+
+exports.getAllUsers = async function() {
+    try {
+        let messages = await db.User.find({}).select('username isBanned isMuted -_id');
+        return messages;
+    } catch (err) {
+        return err;
+    }
+}
