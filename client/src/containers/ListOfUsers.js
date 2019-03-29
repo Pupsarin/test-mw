@@ -21,7 +21,12 @@ class ListOfUsersWO extends Component {
             <div className='chat-users'>
                 {this.props.allUsers.length === 0 
                     ? this.props.users.map(({username}) => <ListUserItem key={username} username={username}/>)
-                    : this.props.allUsers.map(({username}) => <ListUserItem key={username} username={username}/>)
+                    : this.props.allUsers.map(({username}) => 
+                                                        <ListUserItem 
+                                                            key={username}
+                                                            username={username}
+                                                            admin={true}
+                                                        />)
                 }
             </div>
         )
