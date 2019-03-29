@@ -15,7 +15,7 @@ try {
             } else {
                 return next({
                     status: 400,
-                    message: "Invalid username or password."
+                    message: "Invalid password."
                 });
             }
         } else {
@@ -24,13 +24,10 @@ try {
             return res.status(200).json({ id, username, token });
         }
 
-} catch(err) {
-    if (err.code === 11000) {
-        err.message = 'Username is taken';
-    }
+} catch(error) {
     return next({
             status: 400,
-            message: err.message
+            error
         });
     }
 };

@@ -10,6 +10,7 @@ const Main = (props) => (
         <Route path="/enter-chat" render={ () => (
             <AuthForm 
             auth={props.authUser}
+            errors={props.errors}
             {...props}
             />
             ) }/>
@@ -18,4 +19,11 @@ const Main = (props) => (
     </Switch>
 )
 
-export default withRouter(connect(null, { authUser })(Main));
+function mapStateToProps(state) {
+    return {
+        errors: state.errorsReducer
+    }
+}
+
+
+export default withRouter(connect(mapStateToProps, { authUser })(Main));

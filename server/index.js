@@ -4,9 +4,8 @@ const io = require('socket.io').listen(server, { origins: '*:*'});
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const db = require('./models');
-const { createMessage } = require('./handlers/messageHandler');
+const { createMessage, getAllMessages } = require('./handlers/messageHandler');
 const authRoute = require('./routes/authRoute');
-// const { createUser } = require('./handlers/userHandler');
 
 
 
@@ -23,10 +22,8 @@ app.use(function(err, req, res, next){
     });
 });
 
-// createUser({username: "admin", password: "admin"}).then(res => console.log(res));
-
 const connections = new Map();
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
     console.log('connected ' + socket.id);
     console.log(socket.handshake.query.token);
     if (socket.handshake.query.token !== '123') {
@@ -47,11 +44,8 @@ io.on('connection', (socket) => {
 
     connections.set(socket.id, { socket, user } );
 
-    db.Message.find({}).populate('user', 'username')
-        .then( msgs => {
-            // console.log(msgs);
-            return socket.emit('messages', msgs);
-        });
+    let msg = await getAllMessages(); 
+    socket.emit('messages', msg);
 
         // if user admin - send full users list
         if (user.isAdmin) {
@@ -69,13 +63,16 @@ io.on('connection', (socket) => {
         // загружаешь из бд последнее сообщение пользователя, который только что прислал сообщеник
         // и проверяешь время отправки. если текущее время меньше допустимого интервала для нового,
         // то просто выходишь из этого метода
-
         await createMessage({messageBody: msg, userId:'5c9ce836bcb92526aaa226e0'});
 
-        db.Message.find({}).populate('user', 'username')
-            .then(newMessages => { 
-                return io.sockets.emit('update', newMessages)
-            });
+        // db.Message.find({}).populate('user', 'username')
+        //     .then((newMessages) => {
+        //         return io.sockets.emit('update', newMessages)
+        //     });
+
+        let newMessages = await getAllMessages()
+        io.sockets.emit('update', newMessages)
+
     });
 
     // user disconnected

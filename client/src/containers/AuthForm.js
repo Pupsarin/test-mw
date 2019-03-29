@@ -63,10 +63,10 @@ class AuthForm extends Component {
                     margin='normal'
                     variant='outlined'
                 />
-                {/* {
+                {
                     errors.message 
                     && <SnackbarContent style={{color: 'red'}} message={errors.message} />
-                } */}
+                }
                 <Button
                     variant='contained'
                     className={`${classes.formButton} ${classes.signButton}`}
