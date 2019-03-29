@@ -24,7 +24,7 @@ class InputsWO extends Component {
         e.preventDefault();
         if (typeof this.props.sendSocketMessage === 'function'){
             this.props.socket.send(
-                this.props.sendSocketMessage(this.state.message).payload
+                this.props.sendSocketMessage({message: this.state.message, userToken: localStorage.chatToken }).payload
                 );
             this.setState({...this.state, message: ""});
         }
@@ -54,4 +54,10 @@ const Inputs = props => (
     </SocketContext.Consumer>
 )
 
-export default connect(null, { sendSocketMessage })(Inputs);
+function mapStateToProps (store) {
+    return {
+        currentUser: store.usersReducer.currentUser
+    }
+}
+
+export default connect(mapStateToProps, { sendSocketMessage })(Inputs);

@@ -30,7 +30,6 @@ io.on('connection', async (socket) => {
         console.log('disconnected ' + socket.id)
         socket.disconnect();
     }
-    console.log(io.engine.clientsCount);
     //проверить токен
     //если токен правильный пасс
     //нет - дисконект
@@ -64,7 +63,7 @@ io.on('connection', async (socket) => {
         // загружаешь из бд последнее сообщение пользователя, который только что прислал сообщеник
         // и проверяешь время отправки. если текущее время меньше допустимого интервала для нового,
         // то просто выходишь из этого метода
-        await createMessage({messageBody: msg, userId:'5c9ce836bcb92526aaa226e0'});
+        await createMessage(msg);
 
         let newMessages = await getAllMessages()
         io.sockets.emit('update', newMessages)

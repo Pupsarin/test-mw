@@ -4,7 +4,7 @@ mongoose.Promise = Promise;
 
 mongoose.set('useCreateIndex', true);
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/chat', { 
+mongoose.connect('mongodb://localhost:27017/chat', { 
     useNewUrlParser: true,
     keepAlive: true
 });

@@ -11,7 +11,6 @@ const messageSchema = new mongoose.Schema({
     }
 }, {timestamps: true});
 
-//todo propbably not the best place to validate length
 messageSchema.pre('save', async function(next) {
     try {
         if (this.messageBody.length < 200) {

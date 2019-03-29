@@ -1,17 +1,17 @@
 const db = require('../models');
 
-exports.createMessage = async function(req, res) {
+exports.createMessage = async function(req) {
     try {
+        let user = await db.User.findOne({'token': req.userToken});
+        console.log(req);
         let message = await db.Message.create({
-            messageBody: req.messageBody,
-            user: req.userId
+            messageBody: req.message,
+            user: user._id
         });
-        let foundUser = await db.User.findById(req.userId);
-        foundUser.messages.push(message.id);
-        await foundUser.save();
-        // let foundMessage = await db.Message.findById(message.id);
-        // return res.json(foundMessage);
+        user.messages.push(message.id);
+        await user.save();
     } catch (err) {
+        console.log(err);
         return err;
     }
 };
