@@ -27,7 +27,6 @@ class AuthForm extends Component {
         e.preventDefault();
         this.props.auth(this.state)
             .then((res) => {
-                debugger
                 if (res.user) {
                     this.props.history.push('/');
                 }   

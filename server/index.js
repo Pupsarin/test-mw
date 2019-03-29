@@ -30,6 +30,7 @@ io.on('connection', async (socket) => {
         console.log('disconnected ' + socket.id)
         socket.disconnect();
     }
+    console.log(io.engine.clientsCount);
     //проверить токен
     //если токен правильный пасс
     //нет - дисконект
@@ -64,17 +65,17 @@ io.on('connection', async (socket) => {
         // и проверяешь время отправки. если текущее время меньше допустимого интервала для нового,
         // то просто выходишь из этого метода
         await createMessage({messageBody: msg, userId:'5c9ce836bcb92526aaa226e0'});
-        
+
         let newMessages = await getAllMessages()
         io.sockets.emit('update', newMessages)
 
     });
 
     // user disconnected
-    socket.on('disconnect', async (msg) => {
+    socket.on('disconnect', () => {
         const connect = connections.get(socket.id);
-
-        sockets.emit('user_gone_away', {name: connect.user.name});
+        io.sockets.emit('user_gone_away', {name: connect.user.name});
+        connect.socket.disconnect();
         connections.delete(socket.id);
     });
 
