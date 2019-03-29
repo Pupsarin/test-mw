@@ -1,4 +1,4 @@
-import { SEND_WEBSOCKET_MESSAGE, SOCKET_MESSAGE_RECEIVED, SET_CURRENT_USER, SET_ONLINE_USERS, SET_ALL_AVAILABLE_USERS, ADD_ERROR, REMOVE_ERROR } from '../constants/ActionTypes'; 
+import { SEND_WEBSOCKET_MESSAGE, SOCKET_MESSAGE_RECEIVED, SET_ONLINE_USERS, SET_ALL_AVAILABLE_USERS, ADD_ERROR, REMOVE_ERROR } from '../constants/ActionTypes'; 
 
 export function sendSocketMessage(message) {
     return {
@@ -11,14 +11,6 @@ export function receiveSocketMessages(messages) {
     return {
         type : SOCKET_MESSAGE_RECEIVED,
         payload : messages
-    }
-}
-
-export function setCurrentUser({username, isAdmin}){
-    return {
-        type: SET_CURRENT_USER,
-        username,
-        isAdmin
     }
 }
 
@@ -65,8 +57,7 @@ export function authUser(userData) {
             .then( ({username, token, message, isAdmin}) => {
                 if(!message) {
                     localStorage.setItem('chatToken', token);
-                    dispatch(removeError());
-                    return dispatch(setCurrentUser({username, isAdmin}));
+                    return dispatch(removeError());
                 } else {
                     dispatch(addError(message));
                 }
