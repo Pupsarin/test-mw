@@ -54,10 +54,11 @@ export function authUser(userData) {
             .then( res => {
                 return res.json()
             })
-            .then( ({username, token, message, isAdmin}) => {
+            .then( ({token, message}) => {
                 if(!message) {
                     localStorage.setItem('chatToken', token);
-                    return dispatch(removeError());
+                    dispatch(removeError());
+                    return token
                 } else {
                     dispatch(addError(message));
                 }
