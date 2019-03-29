@@ -15,7 +15,7 @@ const Main = (props) => (
             />
             ) }/>
         { !localStorage.chatToken && ( <Redirect to='/enter-chat' /> ) }        
-        <Route exact path='/' render={() => { return(<Chat />) }}/>
+        <Route path='/' render={() => { return(<Chat />) }}/>
     </Switch>
 )
 

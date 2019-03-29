@@ -29,6 +29,7 @@ class Chat extends Component {
         this.state.socket.emit('disconnect');
         this.state.socket.close();
         this.setState({socket: null});
+        localStorage.clear();
     }
 
 
