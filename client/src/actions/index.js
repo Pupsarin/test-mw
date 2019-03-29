@@ -48,11 +48,11 @@ export function authUser(userData) {
                 // debugger
                 return res.json()
             })
-            .then( ({id, username, token, message}) => {
+            .then( ({username, token, message}) => {
                 if(!message) {
                     localStorage.setItem('chatToken', token);
                     dispatch(removeError());
-                    return dispatch(setCurrentUser({id, username}));
+                    return dispatch(setCurrentUser(username));
                 } else {
                     dispatch(addError(message));
                 }

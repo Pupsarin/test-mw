@@ -64,12 +64,7 @@ io.on('connection', async (socket) => {
         // и проверяешь время отправки. если текущее время меньше допустимого интервала для нового,
         // то просто выходишь из этого метода
         await createMessage({messageBody: msg, userId:'5c9ce836bcb92526aaa226e0'});
-
-        // db.Message.find({}).populate('user', 'username')
-        //     .then((newMessages) => {
-        //         return io.sockets.emit('update', newMessages)
-        //     });
-
+        
         let newMessages = await getAllMessages()
         io.sockets.emit('update', newMessages)
 
