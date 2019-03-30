@@ -93,10 +93,11 @@ io.on('connection', async (socket) => {
         // загружаешь из бд последнее сообщение пользователя, который только что прислал сообщеник
         // и проверяешь время отправки. если текущее время меньше допустимого интервала для нового,
         // то просто выходишь из этого метода
-        await createMessage(msg);
-        let newMessages = await getAllMessages();
-        io.sockets.emit('update', newMessages);
-
+        if (msg.message) {
+            await createMessage(msg);
+            let newMessages = await getAllMessages();
+            io.sockets.emit('update', newMessages);
+        }
     });
 
     // user disconnected
