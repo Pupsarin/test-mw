@@ -23,23 +23,43 @@ app.use(function(err, req, res, next){
 });
 
 function getAllOnlineUsers(io, connections) {
-    io.sockets.emit('users_online', [...connections.values()].map((item)=>{
+    let users = [...connections.values()].map((item)=>{
         return {
             username: item.user.username
         };
-    }));
+    });
+    let distinctUsers = [];
+    let map = new Map();
+    for (let user of users) {
+        if(!map.has(user.username)){
+            map.set(user.username, true);
+            distinctUsers.push(user);
+        }
+    }
+    return distinctUsers;   
 }
+
+async function getAllUsersForAdmin(distinctUsers) {
+    let allUsers = await getAllUsers();
+    allUsers.forEach( (user) => {
+        if (distinctUsers.find((el) => el.username === user.username)){
+            user.isOnline = true;
+        } else {
+            user.isOnline = false;
+        }
+    });
+    return allUsers;
+}
+
+
+
+
 // db.User.create({username: 'admin', password: 'admin', isAdmin: true});
 const connections = new Map();
 io.on('connection', async (socket) => {
-
     // get user from db by token
     const user = await db.User.findOne({'token': socket.handshake.query.token});
-    // const user = {isBanned: false, name: 'test', isMuted: false, isAdmin: false};
 
-    //проверить токен
-    //если токен правильный пасс
-    //нет - дисконект
     if (socket.handshake.query.token !== user.token) {
         console.log('disconnected ' + socket.id)
         socket.disconnect();
@@ -49,40 +69,46 @@ io.on('connection', async (socket) => {
         socket.disconnect();
     }
 
-    connections.set(socket.id, { socket, user } );
-    // console.log(connections);
+    connections.set( socket.id, { socket, user } );
 
     let msg = await getAllMessages();
-    // socket.emit('user')
     socket.emit('messages', msg);
+
+    // send online users
+    io.sockets.emit('users_online', getAllOnlineUsers(io, connections));
 
     // if user admin - send full users list
     if (user.isAdmin) {
-        let allUsers = await getAllUsers();
+        let allUsers = await getAllUsersForAdmin(getAllOnlineUsers(io, connections));
         socket.emit('all_users', allUsers);
+    } else {
+        let adminSocketId = [...connections.values()].filter((user)=> user.user.isAdmin );
+        // console.log(adminSocketId[0].socket.id);
+        let allUsers = await getAllUsersForAdmin(getAllOnlineUsers(io, connections));
+        adminSocketId.forEach((el) => io.to(el.socket.id).emit('all_users', allUsers));
     }
-
-    // send online users
-    getAllOnlineUsers(io, connections);
+    
 
     socket.on('message', async (msg) => {
         // загружаешь из бд последнее сообщение пользователя, который только что прислал сообщеник
         // и проверяешь время отправки. если текущее время меньше допустимого интервала для нового,
         // то просто выходишь из этого метода
         await createMessage(msg);
-
         let newMessages = await getAllMessages();
         io.sockets.emit('update', newMessages);
 
     });
 
     // user disconnected
-    socket.on('disconnect', () => {
+    socket.on('disconnect', async () => {
         const connect = connections.get(socket.id);
         io.sockets.emit('user_gone_away', {name: connect.user.username});
         connect.socket.disconnect();
         connections.delete(socket.id);
-        getAllOnlineUsers(io, connections);
+        io.sockets.emit('users_online', getAllOnlineUsers(io, connections));
+        let adminSocketId = [...connections.values()].filter((user)=> user.user.isAdmin );
+        let allUsers = await getAllUsersForAdmin(getAllOnlineUsers(io, connections));
+        adminSocketId.forEach((el) => io.to(el.socket.id).emit('all_users', allUsers));
     });
 
     socket.on('mute', async (msg) => {

@@ -6,13 +6,13 @@ import { setOnlineUsers, setAllUsersForAdmin } from '../actions';
 
 class ListOfUsersWO extends Component {
     
-    componentWillMount() { 
-        this.props.socket.on('users_online', (users) => {
-            this.props.setOnlineUsers(users);
-        });
-
+    componentWillMount() {
         this.props.socket.on('all_users', (allUsers) => {
             this.props.setAllUsersForAdmin(allUsers);
+        });
+        
+        this.props.socket.on('users_online', (users) => {
+            this.props.setOnlineUsers(users);
         });
     }
 
@@ -21,11 +21,12 @@ class ListOfUsersWO extends Component {
             <div className='chat-users'>
                 {this.props.allUsers.length === 0 
                     ? this.props.users.map(({username}) => <ListUserItem key={username} username={username}/>)
-                    : this.props.allUsers.map(({username}) => 
+                    : this.props.allUsers.map(({username, isOnline}) => 
                                                         <ListUserItem 
                                                             key={username}
                                                             username={username}
                                                             admin={true}
+                                                            isOnline={isOnline}
                                                         />)
                 }
             </div>

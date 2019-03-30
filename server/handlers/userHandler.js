@@ -15,8 +15,8 @@ exports.createUser = async function(req, res) {
 
 exports.getAllUsers = async function() {
     try {
-        let messages = await db.User.find({}).select('username isBanned isMuted -_id');
-        return messages;
+        let users = await db.User.find({}).select('username isBanned isMuted -_id').lean();
+        return users;
     } catch (err) {
         return err;
     }
