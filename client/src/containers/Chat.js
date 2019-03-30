@@ -5,7 +5,6 @@ import ListOfUsers from './ListOfUsers';
 import MessageList from './MessageList';
 import { withStyles } from '@material-ui/core/styles';
 import materialStyle from '../styles/materialStyle'
-import { Link } from 'react-router-dom';
 
 import io from 'socket.io-client';
 import SocketContext from '../socket';
@@ -42,7 +41,6 @@ class Chat extends Component {
                     <section className='messages'>
                         <MessageList />
                         <Inputs />
-                        <Link to='/enter-chat'>auth</Link>
                     </section>
                 </div>
             </SocketContext.Provider>

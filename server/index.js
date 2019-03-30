@@ -82,8 +82,8 @@ io.on('connection', async (socket) => {
         let allUsers = await getAllUsersForAdmin(getAllOnlineUsers(io, connections));
         socket.emit('all_users', allUsers);
     } else {
+        //todo wrap into function userBroadcast for admin
         let adminSocketId = [...connections.values()].filter((user)=> user.user.isAdmin );
-        // console.log(adminSocketId[0].socket.id);
         let allUsers = await getAllUsersForAdmin(getAllOnlineUsers(io, connections));
         adminSocketId.forEach((el) => io.to(el.socket.id).emit('all_users', allUsers));
     }
@@ -106,6 +106,7 @@ io.on('connection', async (socket) => {
         connect.socket.disconnect();
         connections.delete(socket.id);
         io.sockets.emit('users_online', getAllOnlineUsers(io, connections));
+        //todo wrap into function userBroadcast for admin
         let adminSocketId = [...connections.values()].filter((user)=> user.user.isAdmin );
         let allUsers = await getAllUsersForAdmin(getAllOnlineUsers(io, connections));
         adminSocketId.forEach((el) => io.to(el.socket.id).emit('all_users', allUsers));

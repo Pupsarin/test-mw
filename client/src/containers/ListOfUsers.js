@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ListUserItem from '../components/ListUserItem';
 import SocketContext from '../socket';
+import { withStyles } from '@material-ui/core/styles';
+import materialStyle from '../styles/materialStyle'
 import { setOnlineUsers, setAllUsersForAdmin } from '../actions';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import { Link } from 'react-router-dom';
 
 class ListOfUsersWO extends Component {
     
@@ -17,11 +22,12 @@ class ListOfUsersWO extends Component {
     }
 
     render(){
+        const { allUsers, users, classes} = this.props
         return(
             <div className='chat-users'>
-                {this.props.allUsers.length === 0 
-                    ? this.props.users.map(({username}) => <ListUserItem key={username} username={username}/>)
-                    : this.props.allUsers.map(({username, isOnline}) => 
+                { allUsers.length === 0 
+                    ? users.map(({username}) => <ListUserItem key={username} username={username}/>)
+                    : allUsers.map(({username, isOnline}) => 
                                                         <ListUserItem 
                                                             key={username}
                                                             username={username}
@@ -29,6 +35,12 @@ class ListOfUsersWO extends Component {
                                                             isOnline={isOnline}
                                                         />)
                 }
+                
+                <Link to='/enter-chat' className={classes.link}>
+                    <ListItem button>
+                        <ListItemText>Logout</ListItemText>
+                    </ListItem>
+                </Link>
             </div>
         )
     }
@@ -45,4 +57,4 @@ const mapStateToProps = store => ({
     allUsers: store.usersReducer.availableUsers
 });
 
-export default connect(mapStateToProps, { setOnlineUsers, setAllUsersForAdmin })(ListOfUsers);
+export default connect(mapStateToProps, { setOnlineUsers, setAllUsersForAdmin })(withStyles(materialStyle)(ListOfUsers));
