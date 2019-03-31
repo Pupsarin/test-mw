@@ -6,7 +6,8 @@ mongoose.set('useCreateIndex', true);
 
 mongoose.connect('mongodb://localhost:27017/chat', { 
     useNewUrlParser: true,
-    keepAlive: true
+    keepAlive: true,
+    useFindAndModify: false
 });
 
 module.exports.User = require('./user');

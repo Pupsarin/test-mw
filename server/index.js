@@ -22,7 +22,7 @@ app.use(function(err, req, res, next){
     });
 });
 
-function getAllOnlineUsers(io, connections) {
+function getAllOnlineUsers(connections) {
     let users = [...connections.values()].map((item)=>{
         return {
             username: item.user.username
@@ -52,11 +52,10 @@ async function getAllUsersForAdmin(distinctUsers) {
 }
 
 
-
-
 // db.User.create({username: 'admin', password: 'admin', isAdmin: true});
 const connections = new Map();
 io.on('connection', async (socket) => {
+
     // get user from db by token
     const user = await db.User.findOne({'token': socket.handshake.query.token});
 
@@ -75,29 +74,40 @@ io.on('connection', async (socket) => {
     socket.emit('messages', msg);
 
     // send online users
-    io.sockets.emit('users_online', getAllOnlineUsers(io, connections));
+    io.sockets.emit('users_online', getAllOnlineUsers(connections));
 
     // if user admin - send full users list
     if (user.isAdmin) {
-        let allUsers = await getAllUsersForAdmin(getAllOnlineUsers(io, connections));
+        let allUsers = await getAllUsersForAdmin(getAllOnlineUsers(connections));
         socket.emit('all_users', allUsers);
     } else {
         //todo wrap into function userBroadcast for admin
         let adminSocketId = [...connections.values()].filter((user)=> user.user.isAdmin );
-        let allUsers = await getAllUsersForAdmin(getAllOnlineUsers(io, connections));
+        let allUsers = await getAllUsersForAdmin(getAllOnlineUsers(connections));
         adminSocketId.forEach((el) => io.to(el.socket.id).emit('all_users', allUsers));
     }
     
 
-    socket.on('message', async (msg) => {
-        // загружаешь из бд последнее сообщение пользователя, который только что прислал сообщеник
-        // и проверяешь время отправки. если текущее время меньше допустимого интервала для нового,
-        // то просто выходишь из этого метода
-        if (msg.message) {
-            await createMessage(msg);
+    socket.on('message', async (newMsg) => {
+        if (user.isMuted){
+            return false;
+        }
+
+        let lastMessage = await db.Message.find({'user': user.id}).sort({ $natural: -1 }).limit(1);
+        let timeDifference = 0;
+        
+        if (lastMessage) {
+            let lastMessageTime = lastMessage[0].createdAt/1000|0;
+            timeDifference = (Date.now()/1000|0) - lastMessageTime;
+        }
+
+        if (newMsg.message && timeDifference > 15) {
+            await createMessage(newMsg);
             let newMessages = await getAllMessages();
             io.sockets.emit('update', newMessages);
         }
+        
+        return false;
     });
 
     // user disconnected
@@ -106,34 +116,35 @@ io.on('connection', async (socket) => {
         io.sockets.emit('user_gone_away', {name: connect.user.username});
         connect.socket.disconnect();
         connections.delete(socket.id);
-        io.sockets.emit('users_online', getAllOnlineUsers(io, connections));
+        io.sockets.emit('users_online', getAllOnlineUsers(connections));
         //todo wrap into function userBroadcast for admin
         let adminSocketId = [...connections.values()].filter((user)=> user.user.isAdmin );
-        let allUsers = await getAllUsersForAdmin(getAllOnlineUsers(io, connections));
+        let allUsers = await getAllUsersForAdmin(getAllOnlineUsers(connections));
         adminSocketId.forEach((el) => io.to(el.socket.id).emit('all_users', allUsers));
     });
 
-    socket.on('mute', async (msg) => {
+    socket.on('mute', async (targetUser) => {
         if (!user.idAdmin){
             return false;
         }
-
-        // mute user by id
+        await db.User.findOneAndUpdate({ username: targetUser }, { isMuted: true }, { new: true });
+        socket.emit('muted');
     });
 
-    socket.on('unmute', async (msg) => {
+    socket.on('unmute', async (targetUser) => {
         if (!user.idAdmin){
             return false;
         }
-
-        // unmute user by id
+        await db.User.findOneAndUpdate({ username: targetUser }, { isMuted: false }, { new: true });
+        socket.emit('unmuted');
     });
 
-    socket.on('ban', async (msg) => {
+    socket.on('ban', async (targetUser) => {
         if (!user.idAdmin){
             return false;
         }
         
+        await db.User.findOneAndUpdate({ username: targetUser }, { isBanned: true }, { new: true });
         // ban user by id
         // .... db command
         const userForBanId = 0;
@@ -145,17 +156,18 @@ io.on('connection', async (socket) => {
                 connection.socket.disconnect();
 
                 // send all user, that admin banned some user
-                sockets.emit('admin_banned_user', {name: connection.user.name});
+                socket.emit('admin_banned_user', {name: connection.user.name});
             }
         });
     });
 
-    socket.on('unban', async (msg) => {
+    socket.on('unban', async (targetUser) => {
         if (!user.idAdmin){
             return false;
         }
-
         // unban user by id
+        await db.User.findOneAndUpdate({ username: targetUser }, { isBanned: false }, { new: true });
+        socket.emit('unbanned');
     });
 });
 

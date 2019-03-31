@@ -11,7 +11,7 @@ const ListUserItem = props => {
     let color = "";
     isOnline ? color = 'primary' : color = "secondary";
     return(
-        <ListItem button>
+        <ListItem>
             { admin && <ListItemIcon><FiberManualRecord color={color} /></ListItemIcon> }
             <ListItemText primary={username} />
         </ListItem>
