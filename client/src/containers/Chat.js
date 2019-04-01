@@ -23,23 +23,24 @@ class Chat extends Component {
             socket: null,
             mobileOpen: false
         }
+        this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
     }
     componentWillMount() {
         // const token = localStorage.chatToken;
         const host = `http://localhost:3001?token=${localStorage.chatToken}`;
         let socket = io(host);
-        this.setState({socket});
+        this.setState({...this.state, socket});
     }
 
     componentWillUnmount() {
         this.state.socket.emit('disconnect');
         this.state.socket.close();
-        this.setState({socket: null});
+        this.setState({...this.state, socket: null});
         delete localStorage.chatToken;
     }
 
-    handleDrawerToggle = () => {
-        this.setState(state => ({...state, mobileOpen: !state.mobileOpen }));
+    handleDrawerToggle() {
+        this.setState({...this.state, mobileOpen: !this.state.mobileOpen });
     };
 
     render() {
