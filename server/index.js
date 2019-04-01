@@ -51,8 +51,11 @@ async function getAllUsersForAdmin(distinctUsers) {
     return allUsers;
 }
 
-
+/**
+ * CREATE ADMIN
+ */
 // db.User.create({username: 'admin', password: 'admin', isAdmin: true});
+
 const connections = new Map();
 io.on('connection', async (socket) => {
 
@@ -102,7 +105,6 @@ io.on('connection', async (socket) => {
             return false;
         }
         let lastMessage = await db.Message.find({'user': user.id}).sort({ $natural: -1 }).limit(1);
-        console.log(lastMessage)
         let timeDifference = 0;
         
         if (lastMessage.length !== 0) {
@@ -110,18 +112,18 @@ io.on('connection', async (socket) => {
             timeDifference = (Date.now()/1000|0) - lastMessageTime;
             
             //todo change timeDifference to 15
-            if (newMsg.message && timeDifference > 1) {
+            if (newMsg.message && timeDifference > 15) {
                 //todo wrap into function newMessage #2
                 await createMessage(newMsg);
                 let newMessages = await getAllMessages();
                 return io.sockets.emit('update', newMessages);
             }
+        } else {
+            //todo wrap into function newMessage #2
+            await createMessage(newMsg);
+            let newMessages = await getAllMessages();
+            return io.sockets.emit('update', newMessages);
         }
-        //todo wrap into function newMessage #2
-        await createMessage(newMsg);
-        let newMessages = await getAllMessages();
-        return io.sockets.emit('update', newMessages);
-            
     });
 
 
@@ -165,7 +167,7 @@ io.on('connection', async (socket) => {
         if (!user.isAdmin){
             return false;
         }
-        // unban user by id
+        // unban user by username
         let unbannedUser = await db.User.findOneAndUpdate({ username: targetUser }, { isBanned: false }, { new: true });
         socket.emit('unbanned', unbannedUser);
     });

@@ -4,7 +4,10 @@ import Inputs from './Inputs';
 import ListOfUsers from './ListOfUsers';
 import MessageList from './MessageList';
 import { withStyles } from '@material-ui/core/styles';
-import materialStyle from '../styles/materialStyle'
+import materialStyle from '../styles/materialStyle';
+import Drawer from '@material-ui/core/Drawer';
+import Hidden from '@material-ui/core/Hidden';
+import AppBar from '@material-ui/core/AppBar';
 
 import io from 'socket.io-client';
 import SocketContext from '../socket';
@@ -14,7 +17,8 @@ class Chat extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            socket: null
+            socket: null,
+            mobileOpen: false
         }
     }
     componentWillMount() {
@@ -37,11 +41,36 @@ class Chat extends Component {
         return(
             <SocketContext.Provider value={this.state.socket}>
                 <div className={classes.main}>
-                    <ListOfUsers />
-                    <section className='messages'>
+                    <Hidden smUp implementation="css">
+                        <Drawer
+                            variant='temporary'
+                            anchor='right'
+                            open={this.state.mobileOpen}
+                            onClose={this.handleDrawerToggle}
+                            classes={{
+                                paper: classes.drawerPaper,
+                            }}
+                        >
+                            <ListOfUsers />
+                        </Drawer>
+                    </Hidden>
+                    <Hidden xsDown implementation="css">
+                        <Drawer
+                            classes={{
+                            paper: classes.drawerPaper,
+                            }}
+                            variant="permanent"
+                            open
+                        >
+                            <ListOfUsers />
+                        </Drawer>
+                    </Hidden>
+                    <main className={classes.messages}>
                         <MessageList />
-                        <Inputs />
-                    </section>
+                        <AppBar position="fixed" className={classes.appBar}>
+                            <Inputs />
+                        </AppBar>
+                    </main>
                 </div>
             </SocketContext.Provider>
         )

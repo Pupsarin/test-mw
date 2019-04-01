@@ -8,9 +8,10 @@ import { setOnlineUsers, setAllUsersForAdmin, banUser, unbanUser, muteUser, unmu
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Link } from 'react-router-dom';
+import Divider from '@material-ui/core/Divider';
+
 
 class ListOfUsersWO extends Component {
-
     componentWillMount() {
         this.props.socket.on('all_users', (allUsers) => {
             this.props.setAllUsersForAdmin(allUsers);
@@ -41,6 +42,7 @@ class ListOfUsersWO extends Component {
     render(){
     
         const { allUsers, users, classes} = this.props
+
         return(
             <div className='chat-users'>
                 { allUsers.length === 0 
@@ -57,6 +59,7 @@ class ListOfUsersWO extends Component {
                 }
                 
                 <Link to='/enter-chat' className={classes.link}>
+                <Divider />
                     <ListItem button>
                         <ListItemText>Logout</ListItemText>
                     </ListItem>
