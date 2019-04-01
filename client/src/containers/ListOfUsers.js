@@ -10,7 +10,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { Link } from 'react-router-dom';
 
 class ListOfUsersWO extends Component {
-    
+
     componentWillMount() {
         this.props.socket.on('all_users', (allUsers) => {
             this.props.setAllUsersForAdmin(allUsers);
@@ -22,17 +22,20 @@ class ListOfUsersWO extends Component {
     }
 
     render(){
-        const { allUsers, users, classes} = this.props
+    
+        const { allUsers, users, classes, isBanned, isMuted} = this.props
         return(
             <div className='chat-users'>
                 { allUsers.length === 0 
                     ? users.map(({username}) => <ListUserItem key={username} username={username}/>)
-                    : allUsers.map(({username, isOnline}) => 
+                    : allUsers.map(({username, isOnline, isBanned, isMuted}) => 
                                                         <ListUserItem 
                                                             key={username}
                                                             username={username}
                                                             admin={true}
                                                             isOnline={isOnline}
+                                                            isBanned={isBanned}
+                                                            isMuted={isMuted}
                                                         />)
                 }
                 

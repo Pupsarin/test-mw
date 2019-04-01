@@ -7,15 +7,21 @@ try {
         });
 
         if (user) {
-            let { username, token } = user;
-            console.log({username, token})
-            let isMatch = await user.comparePassword(req.body.password);
-            if (isMatch) {
-                return res.status(200).json({ username, token });
+            let { username, token, isBanned} = user;
+            if (!isBanned) { 
+                let isMatch = await user.comparePassword(req.body.password);
+                if (isMatch) {
+                    return res.status(200).json({ username, token });
+                } else {
+                    return next({
+                        status: 400,
+                        message: "Invalid password."
+                    });
+                }
             } else {
                 return next({
                     status: 400,
-                    message: "Invalid password."
+                    message: "You're banned."
                 });
             }
         } else {

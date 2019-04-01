@@ -56,6 +56,12 @@ async function getAllUsersForAdmin(distinctUsers) {
 const connections = new Map();
 io.on('connection', async (socket) => {
 
+    /**
+     * TEST AREA :)
+     */
+
+    //////////////////////
+
     // get user from db by token
     const user = await db.User.findOne({'token': socket.handshake.query.token});
 
@@ -81,7 +87,7 @@ io.on('connection', async (socket) => {
         let allUsers = await getAllUsersForAdmin(getAllOnlineUsers(connections));
         socket.emit('all_users', allUsers);
     } else {
-        //todo wrap into function userBroadcast for admin
+        //todo wrap into function userBroadcast for admin #1
         let adminSocketId = [...connections.values()].filter((user)=> user.user.isAdmin );
         let allUsers = await getAllUsersForAdmin(getAllOnlineUsers(connections));
         adminSocketId.forEach((el) => io.to(el.socket.id).emit('all_users', allUsers));
@@ -89,25 +95,78 @@ io.on('connection', async (socket) => {
     
 
     socket.on('message', async (newMsg) => {
+        const user = await db.User.findOne({'token': socket.handshake.query.token});
         if (user.isMuted){
             return false;
         }
-
         let lastMessage = await db.Message.find({'user': user.id}).sort({ $natural: -1 }).limit(1);
+        console.log(lastMessage)
         let timeDifference = 0;
         
-        if (lastMessage) {
+        if (lastMessage.length !== 0) {
             let lastMessageTime = lastMessage[0].createdAt/1000|0;
             timeDifference = (Date.now()/1000|0) - lastMessageTime;
+            
+            //todo change timeDifference to 15
+            if (newMsg.message && timeDifference > 1) {
+                //todo wrap into function newMessage #2
+                await createMessage(newMsg);
+                let newMessages = await getAllMessages();
+                return io.sockets.emit('update', newMessages);
+            }
         }
+        //todo wrap into function newMessage #2
+        await createMessage(newMsg);
+        let newMessages = await getAllMessages();
+        return io.sockets.emit('update', newMessages);
+            
+    });
 
-        if (newMsg.message && timeDifference > 15) {
-            await createMessage(newMsg);
-            let newMessages = await getAllMessages();
-            io.sockets.emit('update', newMessages);
+
+    socket.on('mute', async (targetUser) => {
+        if (!user.isAdmin){
+            return false;
+        }
+        await db.User.findOneAndUpdate({ username: targetUser }, { isMuted: true }, { new: true });
+        socket.emit('muted');
+    });
+
+    socket.on('unmute', async (targetUser) => {
+        if (!user.isAdmin){
+            return false;
+        } 
+        await db.User.findOneAndUpdate({ username: targetUser }, { isMuted: false }, { new: true });    
+        socket.emit('unmuted');
+    });
+
+    socket.on('ban', async (targetUser) => {
+        if (!user.isAdmin){
+            return false;
         }
         
-        return false;
+        await db.User.findOneAndUpdate({ username: targetUser }, { isBanned: true }, { new: true });
+        // ban user by id
+        // .... db command
+        // const userForBanId = 0;
+
+        // disconnect banned user
+        connections.forEach((connection) => {
+            console.log(connection.user.username + " " + targetUser)
+            if (connection.user.username === targetUser){
+                connection.socket.disconnect();
+                // send all user, that admin banned some user
+                // io.sockets.emit('admin_banned_user', {name: connection.user.username});
+            }
+        });
+    });
+
+    socket.on('unban', async (targetUser) => {
+        if (!user.isAdmin){
+            return false;
+        }
+        // unban user by id
+        await db.User.findOneAndUpdate({ username: targetUser }, { isBanned: false }, { new: true });
+        socket.emit('unbanned');
     });
 
     // user disconnected
@@ -117,57 +176,10 @@ io.on('connection', async (socket) => {
         connect.socket.disconnect();
         connections.delete(socket.id);
         io.sockets.emit('users_online', getAllOnlineUsers(connections));
-        //todo wrap into function userBroadcast for admin
+        //todo wrap into function userBroadcast for admin #1
         let adminSocketId = [...connections.values()].filter((user)=> user.user.isAdmin );
         let allUsers = await getAllUsersForAdmin(getAllOnlineUsers(connections));
         adminSocketId.forEach((el) => io.to(el.socket.id).emit('all_users', allUsers));
-    });
-
-    socket.on('mute', async (targetUser) => {
-        if (!user.idAdmin){
-            return false;
-        }
-        await db.User.findOneAndUpdate({ username: targetUser }, { isMuted: true }, { new: true });
-        socket.emit('muted');
-    });
-
-    socket.on('unmute', async (targetUser) => {
-        if (!user.idAdmin){
-            return false;
-        }
-        await db.User.findOneAndUpdate({ username: targetUser }, { isMuted: false }, { new: true });
-        socket.emit('unmuted');
-    });
-
-    socket.on('ban', async (targetUser) => {
-        if (!user.idAdmin){
-            return false;
-        }
-        
-        await db.User.findOneAndUpdate({ username: targetUser }, { isBanned: true }, { new: true });
-        // ban user by id
-        // .... db command
-        const userForBanId = 0;
-
-        // disconnect banned user
-        connections.forEach((connection, socketId, map)=>{
-            // 
-            if (connection.user.id.equals(userForBanId)){
-                connection.socket.disconnect();
-
-                // send all user, that admin banned some user
-                socket.emit('admin_banned_user', {name: connection.user.name});
-            }
-        });
-    });
-
-    socket.on('unban', async (targetUser) => {
-        if (!user.idAdmin){
-            return false;
-        }
-        // unban user by id
-        await db.User.findOneAndUpdate({ username: targetUser }, { isBanned: false }, { new: true });
-        socket.emit('unbanned');
     });
 });
 

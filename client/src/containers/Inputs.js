@@ -5,6 +5,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Send from '@material-ui/icons/Send';
 import { sendSocketMessage } from '../actions';
 import SocketContext from '../socket';
+import { withRouter } from 'react-router-dom';
 
 class InputsWO extends Component {
     constructor(props) {
@@ -14,6 +15,12 @@ class InputsWO extends Component {
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInput = this.handleInput.bind(this);
+    }
+
+    componentWillMount(){
+        this.props.socket.on('disconnect', () => {
+            this.props.history.push('/enter-chat');
+        });
     }
 
     handleInput(e) {
@@ -60,4 +67,4 @@ function mapStateToProps (store) {
     }
 }
 
-export default connect(mapStateToProps, { sendSocketMessage })(Inputs);
+export default withRouter(connect(mapStateToProps, { sendSocketMessage })(Inputs));

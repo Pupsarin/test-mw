@@ -53,9 +53,6 @@ userSchema.pre('save', async function(next){
             let hashedPassword = await bcrypt.hash(this.password, 10);
             this.password = hashedPassword;
             return next();
-        } else {
-            this.invalidate("username must be unique");
-            return next(new Error("username must be unique"));
         }
     } catch(err) {
         return next(err);
