@@ -84,8 +84,9 @@ io.on('connection', async (socket) => {
 
     // if user admin - send full users list
     if (user.isAdmin) {
-        console.log(user.username);
         let allUsers = await getAllUsersForAdmin(getAllOnlineUsers(connections));
+        //todo remove admin from list of all users for admin
+        // let allUsersWOAdmin = allUsers.filter((usr) => usr.username !== user.username);
         socket.emit('all_users', allUsers);
     } else {
         //todo wrap into function userBroadcast for admin #1
@@ -128,16 +129,16 @@ io.on('connection', async (socket) => {
         if (!user.isAdmin){
             return false;
         }
-        await db.User.findOneAndUpdate({ username: targetUser }, { isMuted: true }, { new: true });
-        socket.emit('muted');
+        let mutedUser = await db.User.findOneAndUpdate({ username: targetUser }, { isMuted: true }, { new: true });
+        socket.emit('muted', mutedUser);
     });
 
     socket.on('unmute', async (targetUser) => {
         if (!user.isAdmin){
             return false;
         } 
-        await db.User.findOneAndUpdate({ username: targetUser }, { isMuted: false }, { new: true });    
-        socket.emit('unmuted');
+        let unmutedUser = await db.User.findOneAndUpdate({ username: targetUser }, { isMuted: false }, { new: true });    
+        socket.emit('unmuted', unmutedUser);
     });
 
     socket.on('ban', async (targetUser) => {
@@ -146,16 +147,18 @@ io.on('connection', async (socket) => {
         }
 
         // ban user by username
-        await db.User.findOneAndUpdate({ username: targetUser }, { isBanned: true }, { new: true });
+        let bannedUser = await db.User.findOneAndUpdate({ username: targetUser }, { isBanned: true }, { new: true })
+                                .select('username isBanned -_id');
 
         // disconnect banned user
         connections.forEach((connection) => {
-            console.log(connection.user.username + " " + targetUser)
             if (connection.user.username === targetUser){
-                connection.socket.emit('banned');
+                connection.socket.emit('you_banned');
                 connection.socket.disconnect();
             }
         });
+        console.log(bannedUser);
+        socket.emit('banned', bannedUser);
     });
 
     socket.on('unban', async (targetUser) => {
@@ -163,8 +166,8 @@ io.on('connection', async (socket) => {
             return false;
         }
         // unban user by id
-        await db.User.findOneAndUpdate({ username: targetUser }, { isBanned: false }, { new: true });
-        socket.emit('unbanned');
+        let unbannedUser = await db.User.findOneAndUpdate({ username: targetUser }, { isBanned: false }, { new: true });
+        socket.emit('unbanned', unbannedUser);
     });
 
     // user disconnected

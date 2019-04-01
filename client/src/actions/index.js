@@ -1,4 +1,43 @@
-import { SEND_WEBSOCKET_MESSAGE, SOCKET_MESSAGE_RECEIVED, SET_ONLINE_USERS, SET_ALL_AVAILABLE_USERS, ADD_ERROR, REMOVE_ERROR } from '../constants/ActionTypes'; 
+import { 
+        SEND_WEBSOCKET_MESSAGE,
+        SOCKET_MESSAGE_RECEIVED,
+        SET_ONLINE_USERS, 
+        SET_ALL_AVAILABLE_USERS, 
+        ADD_ERROR, 
+        REMOVE_ERROR,
+        BAN_USER,
+        UNBAN_USER,
+        MUTE_USER,
+        UNMUTE_USER,
+    } from '../constants/ActionTypes'; 
+
+export function banUser(user) {
+    return {
+        type : BAN_USER,
+        user
+    }
+}
+
+export function unbanUser(user) {
+    return {
+        type : UNBAN_USER,
+        user
+    }
+}
+
+export function muteUser(user) {
+    return {
+        type : MUTE_USER,
+        user
+    }
+}
+
+export function unmuteUser(user) {
+    return {
+        type : UNMUTE_USER,
+        user
+    }
+}
 
 export function sendSocketMessage(message) {
     return {

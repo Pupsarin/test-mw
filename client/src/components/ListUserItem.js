@@ -11,7 +11,6 @@ import IconButton from '@material-ui/core/IconButton';
 import SocketContext from '../socket';
 import { withStyles } from '@material-ui/core/styles';
 import materialStyle from '../styles/materialStyle';
-import { connect } from 'react-redux';
 // import lightGreen from '@material-ui/core/colors/lightGreen';
 
 
@@ -88,4 +87,4 @@ const ListUserItem = props => (
     </SocketContext.Consumer>
 )
 
-export default connect()(withStyles(materialStyle)(ListUserItem));
+export default withStyles(materialStyle)(ListUserItem);
