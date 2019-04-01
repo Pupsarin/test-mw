@@ -18,7 +18,7 @@ class InputsWO extends Component {
     }
 
     componentWillMount(){
-        this.props.socket.on('disconnect', () => {
+        this.props.socket.on('banned', () => {
             this.props.history.push('/enter-chat');
         });
     }

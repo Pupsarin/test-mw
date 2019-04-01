@@ -84,6 +84,7 @@ io.on('connection', async (socket) => {
 
     // if user admin - send full users list
     if (user.isAdmin) {
+        console.log(user.username);
         let allUsers = await getAllUsersForAdmin(getAllOnlineUsers(connections));
         socket.emit('all_users', allUsers);
     } else {
@@ -143,19 +144,16 @@ io.on('connection', async (socket) => {
         if (!user.isAdmin){
             return false;
         }
-        
+
+        // ban user by username
         await db.User.findOneAndUpdate({ username: targetUser }, { isBanned: true }, { new: true });
-        // ban user by id
-        // .... db command
-        // const userForBanId = 0;
 
         // disconnect banned user
         connections.forEach((connection) => {
             console.log(connection.user.username + " " + targetUser)
             if (connection.user.username === targetUser){
+                connection.socket.emit('banned');
                 connection.socket.disconnect();
-                // send all user, that admin banned some user
-                // io.sockets.emit('admin_banned_user', {name: connection.user.username});
             }
         });
     });
