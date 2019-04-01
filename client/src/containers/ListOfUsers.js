@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import ListUserItem from '../components/ListUserItem';
 import SocketContext from '../socket';
 import { withStyles } from '@material-ui/core/styles';
-import materialStyle from '../styles/materialStyle'
+import materialStyle from '../styles/materialStyle';
 import { setOnlineUsers, setAllUsersForAdmin, banUser, unbanUser, muteUser, unmuteUser } from '../actions';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';

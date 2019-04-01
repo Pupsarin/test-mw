@@ -8,6 +8,9 @@ import materialStyle from '../styles/materialStyle';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import AppBar from '@material-ui/core/AppBar';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+
 
 import io from 'socket.io-client';
 import SocketContext from '../socket';
@@ -35,6 +38,9 @@ class Chat extends Component {
         delete localStorage.chatToken;
     }
 
+    handleDrawerToggle = () => {
+        this.setState(state => ({...state, mobileOpen: !state.mobileOpen }));
+    };
 
     render() {
         const { classes } = this.props;
@@ -44,7 +50,7 @@ class Chat extends Component {
                     <Hidden smUp implementation="css">
                         <Drawer
                             variant='temporary'
-                            anchor='right'
+                            anchor='left'
                             open={this.state.mobileOpen}
                             onClose={this.handleDrawerToggle}
                             classes={{
@@ -68,6 +74,13 @@ class Chat extends Component {
                     <main className={classes.messages}>
                         <MessageList />
                         <AppBar position="fixed" className={classes.appBar}>
+                            <IconButton
+                                aria-label="Open drawer"
+                                onClick={this.handleDrawerToggle}
+                                className={classes.menuButton}
+                                >
+                                <MenuIcon />
+                            </IconButton>
                             <Inputs />
                         </AppBar>
                     </main>

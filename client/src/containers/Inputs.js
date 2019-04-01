@@ -6,12 +6,14 @@ import Send from '@material-ui/icons/Send';
 import { sendSocketMessage } from '../actions';
 import SocketContext from '../socket';
 import { withRouter } from 'react-router-dom';
+import { withStyles } from '@material-ui/core/styles';
+import materialStyle from '../styles/materialStyle';
 
 class InputsWO extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            message: ""
+            message: ''
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInput = this.handleInput.bind(this);
@@ -33,23 +35,25 @@ class InputsWO extends Component {
             this.props.socket.send(
                 this.props.sendSocketMessage({message: this.state.message, userToken: localStorage.chatToken }).payload
                 );
-            this.setState({...this.state, message: ""});
+            this.setState({...this.state, message: ''});
         }
     }
 
     render() {
+        const { classes } = this.props;
         return(
-            <form onSubmit={this.handleSubmit} className="inputs">
-            <InputBase
-                placeholder="Enter message..." 
-                name="message"
-                autoComplete="off"
-                value={this.state.message}
-                onChange={this.handleInput}
-            />
-            <IconButton type="submit">
-                <Send />
-            </IconButton>
+            <form onSubmit={this.handleSubmit} className={classes.sendForm}>
+                <InputBase
+                    placeholder='Enter message...' 
+                    name='message'
+                    autoComplete='off'
+                    value={this.state.message}
+                    onChange={this.handleInput}
+                    className={classes.messageInput}
+                />
+                <IconButton className={classes.sendButton} type='submit'>
+                    <Send />
+                </IconButton>
             </form>
             )
     }
@@ -67,4 +71,4 @@ function mapStateToProps (store) {
     }
 }
 
-export default withRouter(connect(mapStateToProps, { sendSocketMessage })(Inputs));
+export default withRouter(connect(mapStateToProps, { sendSocketMessage })(withStyles(materialStyle)(Inputs)));
