@@ -1,5 +1,6 @@
 import lightBlue from '@material-ui/core/colors/lightBlue';
 const drawerWidth = 270;
+const appBarHeight = 50;
 
 const materialStyle = theme => ({
     main: {
@@ -12,6 +13,7 @@ const materialStyle = theme => ({
     appBar: {
         flexDirection: 'row',
         top: 'auto',
+        height: appBarHeight, 
         bottom: 0,
         backgroundColor: lightBlue[50],
         paddingLeft: 15,
@@ -35,13 +37,14 @@ const materialStyle = theme => ({
         width: '100%',
 
     },
+    chatMessages: {
+        paddingBottom: appBarHeight + 5 
+    },
     messageInput: {
-
+        width: '100%'
     },
     menuButton: {
-        width: 20,
         marginRight: 20,
-
         [theme.breakpoints.up('sm')]: {
             display: 'none',
         },

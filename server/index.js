@@ -112,17 +112,20 @@ io.on('connection', async (socket) => {
             timeDifference = (Date.now()/1000|0) - lastMessageTime;
             
             //todo change timeDifference to 15
-            if (newMsg.message && timeDifference > 15) {
+            if (newMsg.message && timeDifference > 0) {
                 //todo wrap into function newMessage #2
-                await createMessage(newMsg);
-                let newMessages = await getAllMessages();
-                return io.sockets.emit('update', newMessages);
+                let newMessage = await createMessage(newMsg);
+                console.log(newMessage);
+                return io.sockets.emit('update', newMessage);
+                // let newMessages = await getAllMessages();
+                // return io.sockets.emit('update', newMessages);
             }
         } else {
             //todo wrap into function newMessage #2
-            await createMessage(newMsg);
-            let newMessages = await getAllMessages();
-            return io.sockets.emit('update', newMessages);
+            let newMessage = await createMessage(newMsg);
+            return io.sockets.emit('update', newMessage);
+            // let newMessages = await getAllMessages();
+            // return io.sockets.emit('update', newMessages);
         }
     });
 

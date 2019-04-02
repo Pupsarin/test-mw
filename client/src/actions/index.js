@@ -1,6 +1,7 @@
 import { 
-        SEND_WEBSOCKET_MESSAGE,
-        SOCKET_MESSAGE_RECEIVED,
+        SEND_MESSAGE,
+        MESSAGES_RECEIVED,
+        RECEIVE_MESSAGE,
         SET_ONLINE_USERS, 
         SET_ALL_AVAILABLE_USERS, 
         ADD_ERROR, 
@@ -41,14 +42,21 @@ export function unmuteUser(user) {
 
 export function sendSocketMessage(message) {
     return {
-        type : SEND_WEBSOCKET_MESSAGE,
+        type : SEND_MESSAGE,
+        payload : message
+    }
+}
+
+export function receiveSocketMessage(message) {
+    return {
+        type : RECEIVE_MESSAGE,
         payload : message
     }
 }
 
 export function receiveSocketMessages(messages) {
     return {
-        type : SOCKET_MESSAGE_RECEIVED,
+        type : MESSAGES_RECEIVED,
         payload : messages
     }
 }

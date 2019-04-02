@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ChatMessage from '../components/ChatMessage';
-import { receiveSocketMessages } from '../actions'
+import { receiveSocketMessages, receiveSocketMessage } from '../actions'
+import { withStyles } from '@material-ui/core/styles';
+import materialStyle from '../styles/materialStyle';
 
 import SocketContext from '../socket';
 
@@ -13,14 +15,15 @@ class MessageListWO extends Component {
         });
     }
     componentWillMount() {
-        this.props.socket.on('update', (messages) => {
-            this.props.receiveSocketMessages(messages);
+        this.props.socket.on('update', (message) => {
+            this.props.receiveSocketMessage(message);
         });
     }
 
     render() {
+        const { classes } = this.props;
         return(
-            <div className='chat-messages'>
+            <div className={classes.chatMessages}>
                 {this.props.messages.map(({messageBody, user, _id}) => 
                         <ChatMessage message={messageBody} username={user.username} key={_id} />
                     )}
@@ -40,7 +43,8 @@ const mapStateToProps = store => ({
 });
 
 const mapDispatchToProps = {
-    receiveSocketMessages
+    receiveSocketMessages,
+    receiveSocketMessage
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MessageList);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(materialStyle)(MessageList));

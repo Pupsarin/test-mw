@@ -10,6 +10,8 @@ exports.createMessage = async function(req) {
         });
         user.messages.push(message.id);
         await user.save();
+        message = await db.Message.populate(message, { path:'user', model: 'User', select: 'username -_id'});
+        return message;
     } catch (err) {
         console.log(err);
         return err;

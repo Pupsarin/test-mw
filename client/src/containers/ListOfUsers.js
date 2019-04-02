@@ -61,7 +61,7 @@ class ListOfUsersWO extends Component {
                 <Link to='/enter-chat' className={classes.link}>
                 <Divider />
                     <ListItem button>
-                        <ListItemText>Logout</ListItemText>
+                        <ListItemText>LOGOUT</ListItemText>
                     </ListItem>
                 </Link>
             </div>
