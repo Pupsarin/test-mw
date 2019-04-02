@@ -19,6 +19,18 @@ class MessageListWO extends Component {
             this.props.receiveSocketMessage(message);
         });
     }
+    
+    componentWillUpdate() {
+        this.scrollToBottom();
+    }
+
+    componentDidUpdate() {
+        this.scrollToBottom({ behavior: "smooth" });
+    }
+
+    scrollToBottom = (behavior) => {
+        this.messagesEnd.scrollIntoView(behavior);
+    }
 
     render() {
         const { classes } = this.props;
@@ -27,6 +39,7 @@ class MessageListWO extends Component {
                 {this.props.messages.map(({messageBody, user, _id}) => 
                         <ChatMessage message={messageBody} username={user.username} key={_id} />
                     )}
+                <div ref={(el) => { this.messagesEnd = el; }}></div>
             </div>
         )
     }
