@@ -12,7 +12,6 @@ import {
         UNMUTE_USER,
     } from '../constants/ActionTypes';
 
-import colors from '../styles/colors';
 
 export function banUser(user) {
     return {
@@ -52,7 +51,7 @@ export function sendSocketMessage(message) {
 export function receiveSocketMessage(message) {
     return {
         type : RECEIVE_MESSAGE,
-        payload : message
+        payload : message,
     }
 }
 
@@ -60,7 +59,6 @@ export function receiveSocketMessages(messages) {
     return {
         type : MESSAGES_RECEIVED,
         payload : messages,
-        distinctUsers: colorForDistinctUsers(messages)
     }
 }
 
@@ -89,24 +87,6 @@ export function removeError() {
     return {
         type: REMOVE_ERROR
     }
-}
-
-function colorForDistinctUsers(messagesList) {
-    let users = messagesList.map((item)=>{
-        return {
-            username: item.user.username
-        };
-    });
-    let uniqueUsers = [];
-    let map = new Map();
-    for (let user of users) {
-        if(!map.has(user.username)){
-            map.set(user.username, true);
-            user.color = colors[(Math.random() * colors.length)|0]
-            uniqueUsers.push(user);
-        }
-    }
-    return uniqueUsers;   
 }
 
 export function authUser(userData) {
