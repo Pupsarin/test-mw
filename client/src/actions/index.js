@@ -10,6 +10,7 @@ import {
         UNBAN_USER,
         MUTE_USER,
         UNMUTE_USER,
+        LOGOUT,
     } from '../constants/ActionTypes';
 
 
@@ -86,6 +87,12 @@ export function addError(error) {
 export function removeError() {
     return {
         type: REMOVE_ERROR
+    }
+}
+
+export function logout() {
+    return {
+        type: LOGOUT
     }
 }
 

@@ -10,6 +10,7 @@ import Hidden from '@material-ui/core/Hidden';
 import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import { logout } from '../actions';
 
 
 import io from 'socket.io-client';
@@ -36,6 +37,7 @@ class Chat extends Component {
         this.state.socket.emit('disconnect');
         this.state.socket.close();
         this.setState({...this.state, socket: null});
+        this.props.logout();
         delete localStorage.chatToken;
     }
 
@@ -91,5 +93,9 @@ class Chat extends Component {
     }
 }
 
+const mapDispatchToProps = {
+    logout
+}
 
-export default connect()(withStyles(materialStyle)(Chat));
+
+export default connect(null, mapDispatchToProps)(withStyles(materialStyle)(Chat));

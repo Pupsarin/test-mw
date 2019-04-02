@@ -10,3 +10,4 @@ export const BAN_USER = 'BAN_USER';
 export const UNBAN_USER = 'UNBAN_USER';
 export const MUTE_USER = 'MUTE_USER';
 export const UNMUTE_USER = 'UNMUTE_USER';
+export const LOGOUT = 'LOGOUT';

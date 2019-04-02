@@ -4,7 +4,9 @@ import {
     BAN_USER,
     UNBAN_USER,
     MUTE_USER,
-    UNMUTE_USER } from '../constants/ActionTypes';
+    UNMUTE_USER,
+    LOGOUT,
+        } from '../constants/ActionTypes';
 
 const initialState = {
     usersOnline: [],
@@ -27,13 +29,12 @@ export default function usersReducer(state = initialState, action){
         case SET_ALL_AVAILABLE_USERS:
             return {...state, availableUsers: action.allUsers}
         case BAN_USER:
-            return banMuteStatusUpdate(state, action);
         case UNBAN_USER:
-            return banMuteStatusUpdate(state, action);
         case MUTE_USER:
-            return banMuteStatusUpdate(state, action);
         case UNMUTE_USER:
             return banMuteStatusUpdate(state, action);
+        case LOGOUT:
+            return {...state, availableUsers: []}
         default:
             return state;
     }

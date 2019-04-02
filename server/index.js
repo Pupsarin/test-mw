@@ -88,13 +88,13 @@ io.on('connection', async (socket) => {
     // if user admin - send full users list
     if (user.isAdmin) {
         let allUsers = await getAllUsersForAdmin(getAllOnlineUsers(connections));
-        //todo remove admin from list of all users for admin
         // let allUsersWOAdmin = allUsers.filter((usr) => usr.username !== user.username);
         socket.emit('all_users', allUsers);
     } else {
         //todo wrap into function userBroadcast for admin #1
         let adminSocketId = [...connections.values()].filter((user)=> user.user.isAdmin );
         let allUsers = await getAllUsersForAdmin(getAllOnlineUsers(connections));
+        // let allUsersWOAdmin = allUsers.filter((usr) => usr.username !== user.username);
         adminSocketId.forEach((el) => io.to(el.socket.id).emit('all_users', allUsers));
     }
     
@@ -111,9 +111,7 @@ io.on('connection', async (socket) => {
             let lastMessageTime = lastMessage[0].createdAt/1000|0;
             timeDifference = (Date.now()/1000|0) - lastMessageTime;
             
-            //todo change timeDifference to 15
-            if (newMsg.message && timeDifference > 0) {
-                //todo wrap into function newMessage #2
+            if (newMsg.message && timeDifference >= 15) {
                 let newMessage = await createMessage(newMsg);
                 if (newMessage) {
                     return io.sockets.emit('update', newMessage);
@@ -122,11 +120,8 @@ io.on('connection', async (socket) => {
                 }
             }
         } else {
-            //todo wrap into function newMessage #2
             let newMessage = await createMessage(newMsg);
             return io.sockets.emit('update', newMessage);
-            // let newMessages = await getAllMessages();
-            // return io.sockets.emit('update', newMessages);
         }
     });
 
