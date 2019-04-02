@@ -26,7 +26,9 @@ class InputsWO extends Component {
     }
 
     handleInput(e) {
-        this.setState({[e.target.name]: e.target.value});
+        if (e.target.value.length < 200) {
+            this.setState({...this.state, [e.target.name]: e.target.value});
+        }
     }
 
     handleSubmit(e){

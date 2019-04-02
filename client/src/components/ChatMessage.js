@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 
 class ChatMessage extends Component {
     render(){
-        const {message, username} = this.props;
+        const {message, username, usernameColor} = this.props;
         return (
             <div className="chat-message">
-                <p><strong>{username}: </strong>{message}</p>
+                <p><strong style={{color: usernameColor}}>{username}: </strong>{message}</p>
             </div>
         )
     }

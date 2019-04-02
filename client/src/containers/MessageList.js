@@ -9,23 +9,18 @@ import SocketContext from '../socket';
 
 
 class MessageListWO extends Component {
+
     componentDidMount() {
         this.props.socket.on('messages', (messages) => {
             this.props.receiveSocketMessages(messages);
+            this.scrollToBottom();
         });
     }
     componentWillMount() {
         this.props.socket.on('update', (message) => {
             this.props.receiveSocketMessage(message);
+            this.scrollToBottom({behavior: 'smooth'});
         });
-    }
-    
-    componentWillUpdate() {
-        this.scrollToBottom();
-    }
-
-    componentDidUpdate() {
-        this.scrollToBottom({ behavior: "smooth" });
     }
 
     scrollToBottom = (behavior) => {
@@ -33,11 +28,16 @@ class MessageListWO extends Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, userColors } = this.props;
         return(
             <div className={classes.chatMessages}>
                 {this.props.messages.map(({messageBody, user, _id}) => 
-                        <ChatMessage message={messageBody} username={user.username} key={_id} />
+                        <ChatMessage 
+                            message={messageBody}
+                            usernameColor={userColors.filter(({username}) => username === user.username)[0].color}
+                            username={user.username}
+                            key={_id}
+                        />
                     )}
                 <div ref={(el) => { this.messagesEnd = el; }}></div>
             </div>
@@ -52,7 +52,8 @@ const MessageList = props => (
 )
 
 const mapStateToProps = store => ({
-    messages: store.messagesReducer.messages
+    messages: store.messagesReducer.messages,
+    userColors: store.messagesReducer.distinctUsers
 });
 
 const mapDispatchToProps = {

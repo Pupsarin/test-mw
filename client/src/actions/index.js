@@ -10,7 +10,9 @@ import {
         UNBAN_USER,
         MUTE_USER,
         UNMUTE_USER,
-    } from '../constants/ActionTypes'; 
+    } from '../constants/ActionTypes';
+
+import colors from '../styles/colors';
 
 export function banUser(user) {
     return {
@@ -57,14 +59,15 @@ export function receiveSocketMessage(message) {
 export function receiveSocketMessages(messages) {
     return {
         type : MESSAGES_RECEIVED,
-        payload : messages
+        payload : messages,
+        distinctUsers: colorForDistinctUsers(messages)
     }
 }
 
 export function setOnlineUsers(users) {
     return {
         type: SET_ONLINE_USERS,
-        users
+        users,
     }
 }
 
@@ -86,7 +89,25 @@ export function removeError() {
     return {
         type: REMOVE_ERROR
     }
-} 
+}
+
+function colorForDistinctUsers(messagesList) {
+    let users = messagesList.map((item)=>{
+        return {
+            username: item.user.username
+        };
+    });
+    let uniqueUsers = [];
+    let map = new Map();
+    for (let user of users) {
+        if(!map.has(user.username)){
+            map.set(user.username, true);
+            user.color = colors[(Math.random() * colors.length)|0]
+            uniqueUsers.push(user);
+        }
+    }
+    return uniqueUsers;   
+}
 
 export function authUser(userData) {
     return dispatch => {

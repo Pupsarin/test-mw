@@ -115,10 +115,11 @@ io.on('connection', async (socket) => {
             if (newMsg.message && timeDifference > 0) {
                 //todo wrap into function newMessage #2
                 let newMessage = await createMessage(newMsg);
-                console.log(newMessage);
-                return io.sockets.emit('update', newMessage);
-                // let newMessages = await getAllMessages();
-                // return io.sockets.emit('update', newMessages);
+                if (newMessage) {
+                    return io.sockets.emit('update', newMessage);
+                } else { 
+                    return socket.emit('too_long_error', {err_message: 'message is too long'});
+                }
             }
         } else {
             //todo wrap into function newMessage #2

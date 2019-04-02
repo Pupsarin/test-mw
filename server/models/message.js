@@ -17,7 +17,7 @@ messageSchema.pre('save', async function(next) {
             return next()
         } else {
             let errMsg = 'message is longer than 200 characters';
-            this.invalidate(errMsg)
+            this.invalidate(errMsg);
             return next(new Error(errMsg));
         }
     } catch (error) {

@@ -4,6 +4,11 @@ import materialStyle from '../styles/materialStyle'
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
+import Avatar from '@material-ui/core/Avatar';
+import FormControl from '@material-ui/core/FormControl';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 
 
 class AuthForm extends Component {
@@ -40,41 +45,58 @@ class AuthForm extends Component {
         const { username, password } = this.state;
         const { classes, errors} = this.props;
         return(
-            <form className={classes.userCabinet} onSubmit={this.handleSubmitUser}>
-                <TextField 
-                    name='username'
-                    id='outlined-username'
-                    onChange={this.handleChange}
-                    value={username}
-                    className={classes.textField}
-                    label='Username'
-                    type='text'
-                    margin='normal'
-                    variant='outlined'
-                />
-                <TextField 
-                    name='password'
-                    id='outlined-password'
-                    className={classes.textField}
-                    type='password'
-                    value={password}
-                    onChange={this.handleChange}
-                    label='Password'
-                    margin='normal'
-                    variant='outlined'
-                />
+        <div className={classes.authPage}>    
+            <Paper className={classes.paper}>
+                <Avatar className={classes.avatar}>
+                <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                    ENTER CHAT
+                </Typography>
+                <form className={classes.form} onSubmit={this.handleSubmitUser}>
+                <FormControl margin="normal" required fullWidth>
+                    <TextField 
+                        name='username'
+                        id='outlined-username'
+                        onChange={this.handleChange}
+                        value={username}
+                        className={classes.textField}
+                        label='Username'
+                        type='text'
+                        margin='normal'
+                        variant='outlined'
+                        autoFocus
+                    />
+                </FormControl>
+                <FormControl margin="normal" required fullWidth>
+                    <TextField 
+                        name='password'
+                        id='outlined-password'
+                        className={classes.textField}
+                        type='password'
+                        value={password}
+                        onChange={this.handleChange}
+                        label='Password'
+                        margin='normal'
+                        variant='outlined'
+                    />
+                </FormControl>
                 {
                     errors.message 
                     && <SnackbarContent style={{color: 'red'}} message={errors.message} />
                 }
                 <Button
-                    variant='contained'
-                    className={`${classes.formButton} ${classes.signButton}`}
-                    type='submit'
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
                 >
-                    Enter
+                    ENTER
                 </Button>
-            </form>
+                </form>
+            </Paper>
+            </div>
         )
     }
 }

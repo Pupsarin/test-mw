@@ -1,7 +1,8 @@
 import { MESSAGES_RECEIVED, RECEIVE_MESSAGE } from '../constants/ActionTypes';
 
 const initialState = {
-    messages: []
+    messages: [],
+    distinctUsers: []
 }
 
 export default function messagesReducer(state = initialState, action){
@@ -12,7 +13,7 @@ export default function messagesReducer(state = initialState, action){
             return {...state, messages: updatedMessages}
         }
         case MESSAGES_RECEIVED:
-            return {...state, messages: action.payload}
+            return {...state, messages: action.payload, distinctUsers: action.distinctUsers}
         default:
             return state;
     }
