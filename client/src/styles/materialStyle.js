@@ -3,6 +3,16 @@ const drawerWidth = 270;
 const appBarHeight = 50;
 
 const materialStyle = theme => ({
+    '@keyframes toasterIn': {
+        from: {
+            opacity: 0,
+            transform: 'translateY(100%)'
+        },
+        to: {
+            opacity: 1,
+            transform: 'translateY(0)',
+        }
+    },
     main: {
         display: 'flex',
         flexDirection: 'row',
@@ -43,10 +53,14 @@ const materialStyle = theme => ({
         flexDirection: 'column',
         alignItems: 'flex-start',
         justifyContent: 'flex-start',
-        maxWidth: '100%'
+        maxWidth: '100%',
+
+        bottom: 50,
     },
     card: {
         margin: '5px 5px 5px -10px',
+        opacity: 0.85,
+        animation: 'toasterIn 0.2s ease-in-out',
     },
     cardContent: {
         '&:last-child': {
@@ -100,3 +114,4 @@ const materialStyle = theme => ({
 })
 
 export default materialStyle;
+

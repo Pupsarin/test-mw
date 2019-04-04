@@ -9,22 +9,23 @@ import SocketContext from '../socket';
 
 
 class MessageListWO extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            delay: 0
+        }
+    }
 
     componentDidMount() {
         this.props.socket.on('messages', (messages) => {
             this.props.receiveSocketMessages(messages);
-            this.scrollToBottom();
         });
     }
     componentWillMount() {
         this.props.socket.on('update', (message) => {
             this.props.receiveSocketMessage(message);
-            this.scrollToBottom({behavior: 'smooth'});
+            this.setState({delay: 300})
         });
-    }
-
-    scrollToBottom = (behavior) => {
-        this.messagesEnd.scrollIntoView(behavior);
     }
 
     render() {
@@ -37,9 +38,9 @@ class MessageListWO extends Component {
                             usernameColor={userColors.filter(({username}) => username === user.username)[0].color}
                             username={user.username}
                             key={_id}
+                            delay={this.state.delay}
                         />
                     )}
-                <div ref={(el) => { this.messagesEnd = el; }}></div>
             </div>
         )
     }
