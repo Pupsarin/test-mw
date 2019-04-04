@@ -9,6 +9,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Link } from 'react-router-dom';
 import Divider from '@material-ui/core/Divider';
+import singleton from '../other/singleton'
 
 
 class ListOfUsersWO extends Component {
@@ -62,6 +63,12 @@ class ListOfUsersWO extends Component {
                 <Divider />
                     <ListItem button>
                         <ListItemText>LOGOUT</ListItemText>
+                    </ListItem>
+                </Link>
+                <Link to='/' className={classes.link} onClick={() => singleton.get('http://localhost:3001/')}>
+                <Divider />
+                    <ListItem button>
+                        <ListItemText>singleton test</ListItemText>
                     </ListItem>
                 </Link>
             </div>

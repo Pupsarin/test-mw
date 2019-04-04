@@ -14,6 +14,11 @@ app.use(bodyParser.json());
 
 app.use('/auth', authRoute);
 
+app.get('/', (req, res) => {
+    console.log(req.headers.authorization);
+    res.send('ok');
+});
+
 app.use(function(err, req, res, next){
     res.status(err.status || 500);
     res.send({
